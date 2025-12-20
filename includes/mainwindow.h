@@ -3,20 +3,18 @@
 
 #include <QMainWindow>
 
-QT_BEGIN_NAMESPACE
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
-QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow {
-    Q_OBJECT
+    // Q_OBJECT  // 需要用到信号和槽时要加回来
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow* ui;
 };
 #endif // MAINWINDOW_H
