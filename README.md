@@ -20,6 +20,11 @@ When using, you need to enter the user name (or identification name) and its cor
 
 # Update Logs - 更新日志
 This chapter is written in Chinese for record only.
+### Version 0.4.1
+- 完成了 UI 初步设计，但仍需调整
+- 用直接修改文字的方式加入了中英文切换功能
+- 图标文件已准备好，但尚未配置
+
 ### Version 0.3.0 - After Initial Commit
 开启了 `develop` 分支和 `main` 分支，后者仅用于重大更新的同步。
 - 基本框架已完成

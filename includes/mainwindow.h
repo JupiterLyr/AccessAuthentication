@@ -14,6 +14,10 @@ public:
     MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
 
+protected:
+    void refreshTexts();
+    bool _isEn = false;
+
 private:
     Ui::MainWindow* ui;
 };
