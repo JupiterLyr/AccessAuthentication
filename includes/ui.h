@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include "SlideButton.h"
 
 namespace Ui {
     class MainWindow {
@@ -17,7 +18,7 @@ namespace Ui {
         QLabel* pw_label;
         QLineEdit* pw_input;
         QPushButton* go_btn;
-        QPushButton* lang_btn;
+        SlideButton* lang_btn;
     };
 }
 

@@ -7,7 +7,11 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     ui = new Ui::MainWindow();
     ui->setupUi(this);
 
-    connect(ui->lang_btn, &QPushButton::clicked, this, [this]() {_isEn = !_isEn; refreshTexts();});
+    connect(ui->lang_btn, &QPushButton::clicked, this, [this]() {
+        ui->lang_btn->setCheckedAnimated(!ui->lang_btn->isChecked());
+        _isEn = !_isEn;
+        refreshTexts();
+    });
 }
 
 MainWindow::~MainWindow() {

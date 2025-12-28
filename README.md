@@ -20,6 +20,11 @@ When using, you need to enter the user name (or identification name) and its cor
 
 # Update Logs - 更新日志
 This chapter is written in Chinese for record only.
+### Version 0.4.2
+当前版本尚未加入主要功能，且无法正确播放动画！
+- 加入了 `SlideButton` 自定义组件，编写了配套的 H 文件和 CPP 文件
+- 微调了 `CMakeLists.txt` 中的项目架构设置
+
 ### Version 0.4.1
 - 完成了 UI 初步设计，但仍需调整
 - 用直接修改文字的方式加入了中英文切换功能
