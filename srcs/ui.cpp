@@ -1,11 +1,13 @@
 #include "ui.h"
 #include <QCoreApplication>
+#include <QColor>
 #include <QDir>
 #include <QFileInfo>
 #include <QIcon>
 #include <QLayout>
 #include <QMessageBox>
 #include <QWidget>
+#include "SlideButton.h"
 
 namespace Ui {
     void MainWindow::setupUi(QMainWindow* mainWindow) {
@@ -50,51 +52,17 @@ namespace Ui {
         go_btn->setCursor(Qt::PointingHandCursor);
         go_btn->setFixedWidth(150);
 
-        lang_btn = new SlideButton("EN / 英");
+        lang_btn = new SlideButton("　　English");
         lang_btn->setCursor(Qt::PointingHandCursor);
-        // lang_btn->setCheckable(true);
-        // lang_btn->setStyleSheet(R"(
-        //     QPushButton {
-        //         border: none;
-        //         padding: 8px 20px;
-        //         border-radius: 4px;
-        //         font-size: 14px;
-        //         min-width: 150px;
-                
-        //         /* 初始状态：左深色(#2196F3) 右浅色(#D8F1F5) */
-        //         background: qlineargradient(
-        //             x1:0, y1:0, x2:1, y2:0,
-        //             stop:0 #2196F3, stop:0.49 #2196F3,  /* 左半部分 */
-        //             stop:0.5 #D8F1F5, stop:1 #D8F1F5    /* 右半部分 */
-        //         );
-        //         color: #333;
-        //     }
-        //     QPushButton:hover {
-        //         background: qlineargradient(
-        //             x1:0, y1:0, x2:1, y2:0,
-        //             stop:0 #1976D2, stop:0.49 #1976D2,
-        //             stop:0.5 #C8E6F5, stop:1 #C8E6F5
-        //         );
-        //     }
-        //     QPushButton:checked {
-        //         /* 选中状态：左浅色 右深色 */
-        //         background: qlineargradient(
-        //             x1:0, y1:0, x2:1, y2:0,
-        //             stop:0 #D8F1F5, stop:0.49 #D8F1F5,
-        //             stop:0.5 #2196F3, stop:1 #2196F3
-        //         );
-        //         color: white;
-        //     }
-        //     QPushButton:checked:hover {
-        //         background: qlineargradient(
-        //             x1:0, y1:0, x2:1, y2:0,
-        //             stop:0 #C8E6F5, stop:0.49 #C8E6F5,
-        //             stop:0.5 #1976D2, stop:1 #1976D2
-        //         );
-        //     }
-        //     )"
-        // );
-        lang_btn->setFixedWidth(150);
+        lang_btn->setFixedWidth(120);
+        lang_btn->setSwitchColors({
+            QColor(113, 205, 245), // rgb(113, 205, 245)
+            QColor(71, 218, 88), // rgb(71, 218, 88)
+            QColor(255, 255, 255), // rgb(255, 255, 255)
+            QColor(255, 255, 255) // rgb(255, 255, 255)
+            });
+        lang_btn->setThumbRadius(14);
+        lang_btn->setTrackHeight(24);
 
         idLayout->setAlignment(Qt::AlignCenter);
         pwLayout->setAlignment(Qt::AlignCenter);

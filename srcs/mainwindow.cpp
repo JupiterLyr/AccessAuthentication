@@ -8,9 +8,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     ui->setupUi(this);
 
     connect(ui->lang_btn, &QPushButton::clicked, this, [this]() {
-        ui->lang_btn->setCheckedAnimated(!ui->lang_btn->isChecked());
         _isEn = !_isEn;
         refreshTexts();
+        ui->lang_btn->toggleAnimated();
     });
 }
 
@@ -25,13 +25,13 @@ void MainWindow::refreshTexts() {
         ui->id_label->setText("Identifier");
         ui->pw_label->setText("Password");
         ui->go_btn->setText("Confirm");
-        ui->lang_btn->setText("中 / CN");
+        ui->lang_btn->setText("简体中文　　");
     }
     else {
         ui->uiTitle->setText("受保护文件访问认证");
         ui->id_label->setText("标识符");
         ui->pw_label->setText("密码");
         ui->go_btn->setText("确认");
-        ui->lang_btn->setText("EN / 英");
+        ui->lang_btn->setText("　　English");
     }
 }
