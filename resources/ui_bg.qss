@@ -1,0 +1,4 @@
+QWidget#centralWidget {
+    background-color: #ffffff;
+    border-radius: 16px;
+}

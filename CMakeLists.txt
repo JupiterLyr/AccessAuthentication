@@ -22,7 +22,7 @@ file(GLOB_RECURSE HEADER_FILES "${CMAKE_SOURCE_DIR}/includes/*.h")
 # 添加源文件
 aux_source_directory(${PROJECT_SOURCE_DIR}/srcs SRC_FILES)
 # # 其他配置文件
-# set(RC_FILES ${PROJECT_SOURCE_DIR}/icon_config.rc)
+set(RC_FILES ${PROJECT_SOURCE_DIR}/icon_config.rc)
 # 添加可执行文件
 add_executable(${PROJECT_NAME} ${SRC_FILES} ${HEADER_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -36,14 +36,14 @@ target_link_libraries(
     Qt${QT_VERSION_MAJOR}::Widgets
 )
 
-# # 复制 resource 文件夹
-# add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-#     # 一次性拷贝整个 resource
-#     COMMAND ${CMAKE_COMMAND} -E copy_directory
-#             "${CMAKE_CURRENT_SOURCE_DIR}/resource"
-#             "$<TARGET_FILE_DIR:${PROJECT_NAME}>/resource"
-#     COMMENT "Copying resource/ to $<TARGET_FILE_DIR:${PROJECT_NAME}>"
-# )
+# 复制 resource 文件夹
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    # 一次性拷贝整个 resource
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${CMAKE_CURRENT_SOURCE_DIR}/resources"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/resources"
+    COMMENT "Copying resources/ to $<TARGET_FILE_DIR:${PROJECT_NAME}>"
+)
 
 # ==================== 安装规则 ====================
 set(DEPLOY_DIR "${CMAKE_BINARY_DIR}/Release")   # build/Release

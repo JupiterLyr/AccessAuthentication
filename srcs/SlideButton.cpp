@@ -10,9 +10,9 @@
 static QColor interpolate(const QColor& a, const QColor& b, qreal t) {
     t = qBound(0.0, t, 1.0);
     return QColor::fromRgbF(
-        a.redF()   * (1 - t) + b.redF()   * t,
+        a.redF() * (1 - t) + b.redF() * t,
         a.greenF() * (1 - t) + b.greenF() * t,
-        a.blueF()  * (1 - t) + b.blueF()  * t,
+        a.blueF() * (1 - t) + b.blueF() * t,
         a.alphaF() * (1 - t) + b.alphaF() * t
     );
 }
@@ -71,49 +71,43 @@ void SlideButton::onAnimationFinished() {
     update();
 }
 
+// 鼠标左键点击事件
 void SlideButton::mousePressEvent(QMouseEvent* event) {
-    // if (event->button() != Qt::LeftButton) {
-    //     QPushButton::mousePressEvent(event);
-    //     return;
-    // }
-    if (event->button() == Qt::LeftButton)
-        toggleAnimated();
-    QPushButton::mousePressEvent(event); // WARNING!!!
+    if (event->button() != Qt::LeftButton) { // 鼠标左键
+        event->ignore();
+        return;
+    }
+    // if (event->button() == Qt::LeftButton)
+    //     toggleAnimated();
+    // QPushButton::mousePressEvent(event); // WARNING!!!
 
     m_pressPos = event->pos();
     m_pressSlidePos = m_slidePosition;
     m_dragging = false;
 
-    // 如果点击在滑块范围内，则准备拖拽；否则直接以点击方式切换（通过 toggleAnimated）
+    // 如果点击在滑块范围内，则准备拖拽；否则直接以点击方式切换
     QRect trackRect = rect().adjusted(m_margin, (rect().height() - m_trackHeight) / 2,
         -m_margin, -(rect().height() - m_trackHeight) / 2);
 
-    // 计算 thumb 中心
-    int thumbX = trackRect.left() + int(m_slidePosition * (trackRect.width() - 2 * m_thumbRadius)) + m_thumbRadius;
+    // 计算滑块中心
+    int usable = trackRect.width() - 2 * m_thumbRadius;
+    int thumbX = trackRect.left() + int(m_slidePosition * usable) + m_thumbRadius;
     QPoint thumbCenter(thumbX, trackRect.center().y());
     int hitRadius = m_thumbRadius + 6;
-
     if ((event->pos() - thumbCenter).manhattanLength() <= hitRadius) {
-        // 以滑块为起点可以拖拽
         m_dragging = true;
         if (m_animation->state() == QPropertyAnimation::Running)
             m_animation->stop();
     }
-    else {
-        toggleAnimated();
-    }
-
-    // 不调用基类的 pressed handling here to avoid toggling now
     event->accept();
 }
 
+// 鼠标拖动事件
 void SlideButton::mouseMoveEvent(QMouseEvent* event) {
     if (!m_dragging) {
-        QPushButton::mouseMoveEvent(event);
+        // QPushButton::mouseMoveEvent(event);
         return;
     }
-
-    // 计算依据鼠标移动的 slidePosition
     QRect trackRect = rect().adjusted(m_margin, (rect().height() - m_trackHeight) / 2,
         -m_margin, -(rect().height() - m_trackHeight) / 2);
     int usable = trackRect.width() - 2 * m_thumbRadius;
@@ -126,21 +120,22 @@ void SlideButton::mouseMoveEvent(QMouseEvent* event) {
     event->accept();
 }
 
+// 鼠标释放事件
 void SlideButton::mouseReleaseEvent(QMouseEvent* event) {
-    if (m_dragging) {
-        // 松手时根据位置决定最终状态并动画到该位置
-        bool targetChecked = m_slidePosition > 0.5;
-        m_animation->stop();
-        m_animation->setStartValue(m_slidePosition);
-        m_animation->setEndValue(targetChecked ? 1.0 : 0.0);
-        m_animation->start();
-        m_dragging = false;
-        event->accept();
-    }
-    else {
-        // 未拖拽：已在 mousePress 中触发 toggleAnimated（如果不是点中滑块）
-        QPushButton::mouseReleaseEvent(event);
-    }
+    if (event->button() != Qt::LeftButton)
+        return;
+    bool wasDragging = m_dragging, targetChecked;
+    m_dragging = false;
+    if (wasDragging) // 刚刚在拖拽
+        targetChecked = m_slidePosition >= 0.5;
+    else // 刚刚在单击
+        targetChecked = !isChecked();
+
+    m_animation->stop();
+    m_animation->setStartValue(m_slidePosition);
+    m_animation->setEndValue(targetChecked ? 1.0 : 0.0);
+    m_animation->start();
+    event->accept();
 }
 
 void SlideButton::paintEvent(QPaintEvent* /*event*/) {

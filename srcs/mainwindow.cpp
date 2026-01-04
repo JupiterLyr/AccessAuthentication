@@ -7,10 +7,12 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     ui = new Ui::MainWindow();
     ui->setupUi(this);
 
-    connect(ui->lang_btn, &QPushButton::clicked, this, [this]() {
+    this->setWindowFlags(Qt::FramelessWindowHint | Qt::Window); // 去掉系统矩形边框
+    this->setAttribute(Qt::WA_TranslucentBackground); // 允许透明背景，实现圆角
+
+    connect(ui->lang_btn, &QPushButton::toggled, this, [this]() {
         _isEn = !_isEn;
         refreshTexts();
-        ui->lang_btn->toggleAnimated();
     });
 }
 

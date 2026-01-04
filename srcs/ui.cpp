@@ -3,6 +3,7 @@
 #include <QColor>
 #include <QDir>
 #include <QFileInfo>
+#include <QGraphicsDropShadowEffect>
 #include <QIcon>
 #include <QLayout>
 #include <QMessageBox>
@@ -14,6 +15,7 @@ namespace Ui {
         QWidget* centralWidget = new QWidget(mainWindow);
         mainWindow->setCentralWidget(centralWidget);
         centralWidget->setMinimumSize(320, 280);
+        centralWidget->setObjectName("centralWidget");
 
         mainWindow->setWindowTitle("Access Authentication");
         QString iconPath = QDir(QCoreApplication::applicationDirPath()).filePath("resources/icon.png");
@@ -40,6 +42,7 @@ namespace Ui {
         id_input = new QLineEdit();
         idLayout->addWidget(id_label, 1);
         idLayout->addWidget(id_input, 3);
+
         QHBoxLayout* pwLayout = new QHBoxLayout(); // password layout
         pw_label = new QLabel("密码");
         pw_label->setAlignment(Qt::AlignCenter);
@@ -51,6 +54,7 @@ namespace Ui {
         go_btn = new QPushButton("确认");
         go_btn->setCursor(Qt::PointingHandCursor);
         go_btn->setFixedWidth(150);
+        go_btn->setFocusPolicy(Qt::NoFocus);
 
         lang_btn = new SlideButton("　　English");
         lang_btn->setCursor(Qt::PointingHandCursor);
