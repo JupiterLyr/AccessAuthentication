@@ -8,6 +8,7 @@
 #include <QLayout>
 #include <QMessageBox>
 #include <QWidget>
+#include "DragWidget.h"
 #include "SlideButton.h"
 
 namespace Ui {
@@ -67,7 +68,7 @@ namespace Ui {
         btnLayout->addWidget(go_btn, 1);
         btnLayout->addWidget(cancel_btn, 1);
 
-        lang_btn = new SlideButton("　　Lang.: En"); // language switching slider
+        lang_btn = new SlideButton("　　Lang: En."); // language switching slider
         lang_btn->setCursor(Qt::PointingHandCursor);
         lang_btn->setFixedWidth(120);
         lang_btn->setSwitchColors({
@@ -92,5 +93,22 @@ namespace Ui {
         mainLayout->addStretch(1);
         mainLayout->addWidget(lang_btn);
         mainLayout->setAlignment(lang_btn, Qt::AlignCenter);
+
+        drag_sphere = new DragWidget(mainWindow, centralWidget);
+        drag_sphere->setFixedSize(16, 16);
+        drag_sphere->setAttribute(Qt::WA_StyledBackground, true);
+        drag_sphere->setStyleSheet(
+            "background: transparent;"
+            "image: url(:/resources/drag-dots.svg);"
+        );
+        drag_sphere->raise();
+        QMargins centralMargin = centralWidget->contentsMargins();
+        drag_sphere->move(centralMargin.left() + 10, centralMargin.top() + 10);
+        // QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect(centralWidget);
+        // shadow->setBlurRadius(28);
+        // shadow->setOffset(0, 5);
+        // shadow->setColor(QColor(0, 0, 0, 80));
+        // centralWidget->setAttribute(Qt::WA_StyledBackground, true);
+        // centralWidget->setGraphicsEffect(shadow);
     }
 }; // namespace Ui

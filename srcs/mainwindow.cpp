@@ -37,6 +37,6 @@ void MainWindow::refreshTexts() {
         ui->pw_label->setText("密码");
         ui->go_btn->setText("确认");
         ui->cancel_btn->setText("取消");
-        ui->lang_btn->setText("　　Lang.: En");
+        ui->lang_btn->setText("　　Lang: En.");
     }
 }

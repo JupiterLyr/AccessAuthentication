@@ -21,15 +21,18 @@ When using, you need to enter the user name (or identification name) and its cor
 # Update Logs - 更新日志
 This chapter is written in Chinese for record only.
 
+### Version 0.6.0
+- 增加了可拖动的组件，图标采用 `drag-dots.svg` 文件
+- 修复了 `icon_config.rc` 及相关配置的问题
+#### To Do List
+1. 窗口添加后方阴影，UI 层或需重写
+2. 选择合适的加密算法，探究适合的密钥存储方式，完成基本存储和调用操作
+3. 开发“确认”按钮的实际功能
+
 ### Version 0.5.1
 累积更新 v0.5.0、v0.5.1
 - 将界面全部组件的 UI 变得更现代，并调整了界面配色
-- 软件实际功能即将继续开发
-#### To Do List
-1. 增加“关闭”按钮
-2. 增设窗口界面可拖动功能
-3. 完善加密方式
-4. 开发“确认”按钮的实际功能
+- 添加了“取消”按钮，用于关闭界面
 
 ### Version 0.4.5
 累积更新 v0.4.3、v0.4.4、v0.4.5
