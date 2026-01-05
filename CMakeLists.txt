@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(AccessAuthentication VERSION 0.4.3 LANGUAGES CXX)
+project(AccessAuthentication VERSION 0.5 LANGUAGES CXX)
 set(PROJECT_NAME AccessAuthentication)
 
 set(CMAKE_AUTOUIC ON)

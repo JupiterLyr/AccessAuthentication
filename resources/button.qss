@@ -3,17 +3,29 @@ QPushButton {
     border-radius: 12px;
     font-size: 14px;
     font-weight: 500;
+}
 
-    background-color:rgb(219, 246, 236);
-    border: 1.5px solid rgb(112, 234, 132);
+QPushButton#goBtn {
+    background-color:rgb(253, 249, 245);
+    border: 1.5px solid rgb(250, 198, 142);
+}
+
+QPushButton#cancelBtn {
+    background-color:rgb(255, 251, 245);
+    border: 1.5px solid rgb(253, 149, 149);
 }
 
 QPushButton:hover {
-    background-color:rgb(202, 250, 212);
+    background-color:rgb(250, 247, 202);
 }
 
-QPushButton:pressed {
-    background-color:rgb(141, 242, 153);
+QPushButton:pressed#goBtn {
+    background-color:rgb(245, 186, 122);
+    padding-top: 7px; /* 轻微下压感 */
+}
+
+QPushButton:pressed#cancelBtn {
+    background-color:rgb(236, 158, 158);
     padding-top: 7px; /* 轻微下压感 */
 }
 

@@ -26,8 +26,9 @@ int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
     QFile qssFile1 = QFile(QDir(QCoreApplication::applicationDirPath()).filePath("resources/button.qss")),
-    qssFile2 = QFile(QDir(QCoreApplication::applicationDirPath()).filePath("resources/ui_bg.qss"));
-    std::vector<QFile*> qss_files = {&qssFile1, &qssFile2};
+    qssFile2 = QFile(QDir(QCoreApplication::applicationDirPath()).filePath("resources/ui_bg.qss")),
+    qssFile3 = QFile(QDir(QCoreApplication::applicationDirPath()).filePath("resources/line_edit.qss"));
+    std::vector<QFile*> qss_files = {&qssFile1, &qssFile2, &qssFile3};
     loadStyleSheet(app, qss_files);
 
     MainWindow win;

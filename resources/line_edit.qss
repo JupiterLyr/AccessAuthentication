@@ -1,0 +1,21 @@
+QLineEdit {
+    background-color: transparent;
+    border: none;
+    border-bottom: 1.5px solid rgb(223, 229, 230);
+    border-radius: 0px;            /* 直角 */
+    padding: 1px 2px;
+    font-size: 14px;
+    color: rgb(0, 5, 70);
+}
+
+QLineEdit:hover {
+    border-bottom-color: rgb(215, 243, 249);
+}
+
+QLineEdit:focus {
+    border-bottom-color: rgb(104, 172, 250);
+}
+
+QLabel#idpwLabel {
+    color: rgb(0, 7, 104);
+}

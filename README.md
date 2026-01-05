@@ -21,12 +21,21 @@ When using, you need to enter the user name (or identification name) and its cor
 # Update Logs - 更新日志
 This chapter is written in Chinese for record only.
 
+### Version 0.5.1
+累积更新 v0.5.0、v0.5.1
+- 将界面全部组件的 UI 变得更现代，并调整了界面配色
+- 软件实际功能即将继续开发
+#### To Do List
+1. 增加“关闭”按钮
+2. 增设窗口界面可拖动功能
+3. 完善加密方式
+4. 开发“确认”按钮的实际功能
+
 ### Version 0.4.5
 累积更新 v0.4.3、v0.4.4、v0.4.5
 - 重写并优化了 `SlideButton.h` 和 `SlideButton.cpp`，提供了组件接口，能够丝滑地交互滑动按钮组件
 - 利用 QSS 将确认按钮的 UI 进行了优化，并在 `main.cpp` 中调用，将主界面改为圆角，隐藏了系统窗口，使得界面看起来更加现代
 - 配置了图标文件
-- 软件实际功能上暂无进展
 
 ### Version 0.4.2
 当前版本尚未加入主要功能，且无法正确播放动画！
