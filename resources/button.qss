@@ -1,4 +1,4 @@
-QPushButton {
+QPushButton[btnStyle="primary"] {
     padding: 4px 8px;
     border-radius: 12px;
     font-size: 14px;
@@ -15,8 +15,12 @@ QPushButton#cancelBtn {
     border: 1.5px solid rgb(253, 149, 149);
 }
 
-QPushButton:hover {
-    background-color:rgb(250, 247, 202);
+QPushButton:hover#goBtn {
+    background-color:rgb(253, 243, 221);
+}
+
+QPushButton:hover#cancelBtn {
+    background-color:rgb(255, 230, 227);
 }
 
 QPushButton:pressed#goBtn {

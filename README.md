@@ -21,31 +21,32 @@ When using, you need to enter the user name (or identification name) and its cor
 # Update Logs - 更新日志
 This chapter is written in Chinese for record only.
 
-### Version 0.6.0
-- 增加了可拖动的组件，图标采用 `drag-dots.svg` 文件
-- 修复了 `icon_config.rc` 及相关配置的问题
+### Version 0.6.3
+累积更新 v0.6.1 ~ v0.6.3。该版本**交付了较完善的 UI 设计，`Confirm` 的操作暂且用 `QMessageBox` 拦截**，同时发布至 `develop` 和 `main` 分支。
+- 优化了 UI 层，将 `centralWidget` 作为总底板，`centralLayout` 用于界面居中，所有组件挪至其内的 `mainWidget` 中
+- 将 `mainWidget` 作为交互窗口，并在窗口后方添加了阴影
+- 将 `Confirm` 的快捷键设定为 `Enter`
+- 优化了 QSS 组件效果设置
+- 修复了软件图标无法正常显示的 bug
 #### To Do List
-1. 窗口添加后方阴影，UI 层或需重写
-2. 选择合适的加密算法，探究适合的密钥存储方式，完成基本存储和调用操作
-3. 开发“确认”按钮的实际功能
+1. 选择合适的加密算法，探究适合的密钥存储方式，完成基本存储和调用操作
+2. 开发 `Confirm` 按钮的实际功能
 
 ### Version 0.5.1
 累积更新 v0.5.0、v0.5.1
 - 将界面全部组件的 UI 变得更现代，并调整了界面配色
-- 添加了“取消”按钮，用于关闭界面
+- 添加了 `Cancel` 按钮，用于关闭界面
 
 ### Version 0.4.5
-累积更新 v0.4.3、v0.4.4、v0.4.5
+累积更新 v0.4.3 ~ v0.4.5
 - 重写并优化了 `SlideButton.h` 和 `SlideButton.cpp`，提供了组件接口，能够丝滑地交互滑动按钮组件
 - 利用 QSS 将确认按钮的 UI 进行了优化，并在 `main.cpp` 中调用，将主界面改为圆角，隐藏了系统窗口，使得界面看起来更加现代
 - 配置了图标文件
 
 ### Version 0.4.2
-当前版本尚未加入主要功能，且无法正确播放动画！
+累积更新 v0.4.0 ~ v0.4.2，当前版本尚未加入主要功能，且无法正确播放动画！
 - 加入了 `SlideButton` 自定义组件，编写了配套的 H 文件和 CPP 文件
 - 微调了 `CMakeLists.txt` 中的项目架构设置
-
-### Version 0.4.1
 - 完成了 UI 初步设计，但仍需调整
 - 用直接修改文字的方式加入了中英文切换功能
 - 图标文件已准备好，但尚未配置

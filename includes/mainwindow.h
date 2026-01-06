@@ -21,5 +21,10 @@ protected:
 
 private:
     Ui::MainWindow* ui;
+
+private slots:
+    void fadeOutUI(int duration = 100);
+    void onGoBtnClicked();
+    void onCancelBtnClicked();
 };
 #endif // MAINWINDOW_H

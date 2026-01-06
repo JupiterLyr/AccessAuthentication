@@ -13,9 +13,10 @@
 
 namespace Ui {
     void MainWindow::setupUi(QMainWindow* mainWindow) {
+        int MAIN_WIDTH = 320, MAIN_HEIGHT = 280;
         QWidget* centralWidget = new QWidget(mainWindow);
         mainWindow->setCentralWidget(centralWidget);
-        centralWidget->setMinimumSize(320, 280);
+        centralWidget->setFixedSize(MAIN_WIDTH + 40, MAIN_HEIGHT + 40);
         centralWidget->setObjectName("centralWidget");
 
         mainWindow->setWindowTitle("Access Authentication");
@@ -29,7 +30,16 @@ namespace Ui {
             "QLabel, QLineEdit, QPushButton { font-size: 14px; font: Arial; }"
         );
 
-        QVBoxLayout* mainLayout = new QVBoxLayout(centralWidget);
+        QGridLayout* centralLayout = new QGridLayout(centralWidget); // 锚定中央区域
+        centralLayout->setContentsMargins(20, 20, 20, 20);
+        centralLayout->setSpacing(0);
+        QWidget* mainWidget = new QWidget(centralWidget); // 主要部件区
+        mainWidget->setObjectName("mainWidget");
+        mainWidget->setFixedSize(MAIN_WIDTH, MAIN_HEIGHT);
+        mainWidget->setAttribute(Qt::WA_StyledBackground, true);
+        centralLayout->addWidget(mainWidget, 0, 0, Qt::AlignCenter);
+
+        QVBoxLayout* mainLayout = new QVBoxLayout(mainWidget);
         mainLayout->setContentsMargins(24, 18, 26, 18); // Left, Up, Right, Bottom
 
         uiTitle = new QLabel("受保护文件访问认证");
@@ -37,16 +47,16 @@ namespace Ui {
         uiTitle->setAlignment(Qt::AlignCenter);
         uiTitle->setFixedHeight(50);
 
-        QHBoxLayout* idLayout = new QHBoxLayout(); // identifier layout
-        id_label = new QLabel("标识符");
+        QHBoxLayout* idLayout = new QHBoxLayout(mainWidget); // identifier layout
+        id_label = new QLabel("标 识 符");
         id_label->setObjectName("idpwLabel");
         id_label->setAlignment(Qt::AlignCenter);
         id_input = new QLineEdit();
         idLayout->addWidget(id_label, 1);
         idLayout->addWidget(id_input, 3);
 
-        QHBoxLayout* pwLayout = new QHBoxLayout(); // password layout
-        pw_label = new QLabel("密码");
+        QHBoxLayout* pwLayout = new QHBoxLayout(mainWidget); // password layout
+        pw_label = new QLabel("密 　 码");
         pw_label->setObjectName("idpwLabel");
         pw_label->setAlignment(Qt::AlignCenter);
         pw_input = new QLineEdit();
@@ -54,14 +64,16 @@ namespace Ui {
         pwLayout->addWidget(pw_label, 1);
         pwLayout->addWidget(pw_input, 3);
 
-        QHBoxLayout* btnLayout = new QHBoxLayout(); // button layout
-        go_btn = new QPushButton("确认");
+        QHBoxLayout* btnLayout = new QHBoxLayout(mainWidget); // button layout
+        go_btn = new QPushButton("确　认");
         go_btn->setObjectName("goBtn");
+        go_btn->setProperty("btnStyle", "primary");
         go_btn->setCursor(Qt::PointingHandCursor);
         go_btn->setFixedWidth(120);
         go_btn->setFocusPolicy(Qt::NoFocus);
-        cancel_btn = new QPushButton("取消");
+        cancel_btn = new QPushButton("取　消");
         cancel_btn->setObjectName("cancelBtn");
+        cancel_btn->setProperty("btnStyle", "primary");
         cancel_btn->setCursor(Qt::PointingHandCursor);
         cancel_btn->setFixedWidth(120);
         cancel_btn->setFocusPolicy(Qt::NoFocus);
@@ -94,7 +106,7 @@ namespace Ui {
         mainLayout->addWidget(lang_btn);
         mainLayout->setAlignment(lang_btn, Qt::AlignCenter);
 
-        drag_sphere = new DragWidget(mainWindow, centralWidget);
+        drag_sphere = new DragWidget(mainWindow, mainWidget);
         drag_sphere->setFixedSize(16, 16);
         drag_sphere->setAttribute(Qt::WA_StyledBackground, true);
         drag_sphere->setStyleSheet(
@@ -102,13 +114,14 @@ namespace Ui {
             "image: url(:/resources/drag-dots.svg);"
         );
         drag_sphere->raise();
-        QMargins centralMargin = centralWidget->contentsMargins();
-        drag_sphere->move(centralMargin.left() + 10, centralMargin.top() + 10);
-        // QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect(centralWidget);
-        // shadow->setBlurRadius(28);
-        // shadow->setOffset(0, 5);
-        // shadow->setColor(QColor(0, 0, 0, 80));
-        // centralWidget->setAttribute(Qt::WA_StyledBackground, true);
-        // centralWidget->setGraphicsEffect(shadow);
+        QMargins mainMargin = mainWidget->contentsMargins();
+        drag_sphere->move(mainMargin.left() + 16, mainMargin.top() + 16);
+
+        QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect(mainWidget);
+        shadow->setBlurRadius(28);
+        shadow->setOffset(0, 5);
+        shadow->setColor(QColor(0, 0, 0, 80));
+        mainWidget->setAttribute(Qt::WA_StyledBackground, true);
+        mainWidget->setGraphicsEffect(shadow);
     }
 }; // namespace Ui
