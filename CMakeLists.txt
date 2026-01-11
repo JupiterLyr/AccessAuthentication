@@ -47,10 +47,22 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMENT "Copying resources/ to $<TARGET_FILE_DIR:${PROJECT_NAME}>"
 )
 
+# 设置 配置生成器 工具
+add_executable(config_gen ${PROJECT_SOURCE_DIR}/tools/config_gen.cpp)
+target_link_libraries(
+    config_gen PRIVATE
+    Qt${QT_VERSION_MAJOR}::Core
+)
+
 # ==================== 安装规则 ====================
 set(DEPLOY_DIR "${CMAKE_BINARY_DIR}/Release")   # build/Release
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${DEPLOY_DIR}"
+    RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${DEPLOY_DIR}"
+    RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${DEPLOY_DIR}"
+)
+set_target_properties(config_gen PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY_RELEASE "${DEPLOY_DIR}"
     RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${DEPLOY_DIR}"
     RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${DEPLOY_DIR}"
@@ -77,5 +89,17 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMENT "Deploying Qt dependencies..."
     VERBATIM
 )
+add_custom_command(TARGET config_gen POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" -E echo ">>> Running windeployqt..."
+    COMMAND "${WINDEPLOYQT_EXECUTABLE}"
+            --no-translations
+            --no-gui
+            --qmldir "${CMAKE_SOURCE_DIR}/qml"
+            "$<TARGET_FILE:config_gen>"
+    WORKING_DIRECTORY "${DEPLOY_DIR}"
+    COMMENT "Deploying Qt dependencies..."
+    VERBATIM
+)
 
 qt_finalize_executable(${PROJECT_NAME})
+qt_finalize_executable(config_gen)

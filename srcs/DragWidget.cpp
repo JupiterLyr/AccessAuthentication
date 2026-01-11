@@ -1,7 +1,7 @@
 #include "DragWidget.h"
 #include <QMouseEvent>
 
-// 使用时必须绑定一个父组件
+/// @warning 使用时必须绑定一个父组件
 DragWidget::DragWidget(QWidget* window, QWidget* parent)
     : QWidget(parent), m_window(window) {
     setCursor(Qt::SizeAllCursor);

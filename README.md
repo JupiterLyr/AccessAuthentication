@@ -21,6 +21,15 @@ When using, you need to enter the user name (or identification name) and its cor
 # Update Logs - 更新日志
 This chapter is written in Chinese for record only.
 
+### Version 0.7.2
+累积更新 v0.6.4、v0.7.0 ~ 0.7.2，其中 v0.6.4 优化了背景阴影效果，v0.7.x 则致力于开发新功能。考虑到数据安全性问题，配置生成器的算法暂不开源。The algorithm of "Configuration Generator" is not open source considering that data security needs to be protected.
+- GUI 界面部分完工，仅剩 `Confirm` 的功能链接未配置
+- 加入了首个用于生成 BIN 文件的**配置生成器**工具，其源文件放置于 `tools` 文件夹下
+#### To Do List
+1. 验证当前存储方式能否正常运作
+2. 规范化 `config_gen.cpp` 涉及的所有操作，并评估安全性
+3. 开发 `Confirm` 按钮的实际功能
+
 ### Version 0.6.3
 累积更新 v0.6.1 ~ v0.6.3。该版本**交付了较完善的 UI 设计，`Confirm` 的操作暂且用 `QMessageBox` 拦截**，同时发布至 `develop` 和 `main` 分支。
 - 优化了 UI 层，将 `centralWidget` 作为总底板，`centralLayout` 用于界面居中，所有组件挪至其内的 `mainWidget` 中
@@ -28,9 +37,6 @@ This chapter is written in Chinese for record only.
 - 将 `Confirm` 的快捷键设定为 `Enter`
 - 优化了 QSS 组件效果设置
 - 修复了软件图标无法正常显示的 bug
-#### To Do List
-1. 选择合适的加密算法，探究适合的密钥存储方式，完成基本存储和调用操作
-2. 开发 `Confirm` 按钮的实际功能
 
 ### Version 0.5.1
 累积更新 v0.5.0、v0.5.1

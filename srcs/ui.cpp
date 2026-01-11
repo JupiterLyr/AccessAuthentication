@@ -13,10 +13,10 @@
 
 namespace Ui {
     void MainWindow::setupUi(QMainWindow* mainWindow) {
-        int MAIN_WIDTH = 320, MAIN_HEIGHT = 280;
+        int MAIN_WIDTH = 320, MAIN_HEIGHT = 280, BLUR_RADIUS = 16;
         QWidget* centralWidget = new QWidget(mainWindow);
         mainWindow->setCentralWidget(centralWidget);
-        centralWidget->setFixedSize(MAIN_WIDTH + 40, MAIN_HEIGHT + 40);
+        centralWidget->setFixedSize(MAIN_WIDTH + int(BLUR_RADIUS * 1.5), MAIN_HEIGHT + int(BLUR_RADIUS * 1.5));
         centralWidget->setObjectName("centralWidget");
 
         mainWindow->setWindowTitle("Access Authentication");
@@ -31,7 +31,6 @@ namespace Ui {
         );
 
         QGridLayout* centralLayout = new QGridLayout(centralWidget); // 锚定中央区域
-        centralLayout->setContentsMargins(20, 20, 20, 20);
         centralLayout->setSpacing(0);
         QWidget* mainWidget = new QWidget(centralWidget); // 主要部件区
         mainWidget->setObjectName("mainWidget");
@@ -118,8 +117,8 @@ namespace Ui {
         drag_sphere->move(mainMargin.left() + 16, mainMargin.top() + 16);
 
         QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect(mainWidget);
-        shadow->setBlurRadius(28);
-        shadow->setOffset(0, 5);
+        shadow->setBlurRadius(BLUR_RADIUS);
+        shadow->setOffset(1, 3);
         shadow->setColor(QColor(0, 0, 0, 80));
         mainWidget->setAttribute(Qt::WA_StyledBackground, true);
         mainWidget->setGraphicsEffect(shadow);
