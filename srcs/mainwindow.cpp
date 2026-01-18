@@ -1,5 +1,9 @@
 #include "mainwindow.h"
 #include <QtCore/qnamespace.h>
+#include <QCoreApplication>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFile>
 #include <QTimer>
 #include <QMessageBox>
 #include <QWidget>
@@ -12,6 +16,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     this->setWindowFlags(Qt::FramelessWindowHint); // 去掉系统矩形边框，原为 Qt::Window
     this->setAttribute(Qt::WA_TranslucentBackground); // 透明背景
 
+    QString bin_path = QDir(QCoreApplication::applicationDirPath()).filePath("resources/core.bin");
+    authenticator = new Authenticator(bin_path, this);
+
     connect(ui->id_input, &QLineEdit::returnPressed, ui->go_btn, &QPushButton::click);
     connect(ui->pw_input, &QLineEdit::returnPressed, ui->go_btn, &QPushButton::click);
     connect(ui->go_btn, &QPushButton::clicked, this, &MainWindow::onGoBtnClicked);
@@ -20,6 +27,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
         _isEn = !_isEn;
         refreshTexts();
         });
+    connect(authenticator, &Authenticator::autSuccess, this, &MainWindow::onAutSuccess);
+    connect(authenticator, &Authenticator::autFailed, this, &MainWindow::onAutFailed);
 }
 
 MainWindow::~MainWindow() {
@@ -58,14 +67,22 @@ void MainWindow::fadeOutUI(int duration) {
 }
 
 void MainWindow::onGoBtnClicked() {
-    if (_isEn)
-        QMessageBox::warning(this, "Warning", "This function has not been developed yet!");
-    else
-        QMessageBox::warning(this, "注意", "该功能尚未开发！");
+    QString id_str = ui->id_input->text();
+    QString pw_str = ui->pw_input->text();
+    emit authenticator->authenticate(id_str, pw_str);
 }
 
 void MainWindow::onCancelBtnClicked() {
     int ms = 200;
     fadeOutUI(ms);
     QTimer::singleShot(ms + 20, this, &MainWindow::close);
+}
+
+void MainWindow::onAutSuccess(const QString& folderpath) {
+    if (!QDesktopServices::openUrl(QUrl::fromLocalFile(folderpath)))
+        QMessageBox::warning(this, "Warning", "Cannot open folder:\n无法打开文件夹：\n" + folderpath);
+}
+
+void MainWindow::onAutFailed(const QString& reason) {
+    QMessageBox::critical(this, "Authenticate Failed", reason);
 }
