@@ -48,7 +48,11 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 )
 
 # 设置 配置生成器 工具
-add_executable(config_gen ${PROJECT_SOURCE_DIR}/tools/config_gen.cpp)
+add_executable(
+    config_gen
+    ${PROJECT_SOURCE_DIR}/tools/config_gen.cpp
+    ${CMAKE_SOURCE_DIR}/includes/encoder.h
+)
 target_link_libraries(
     config_gen PRIVATE
     Qt${QT_VERSION_MAJOR}::Core
