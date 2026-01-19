@@ -26,9 +26,11 @@ private:
 
 private slots:
     void fadeOutUI(int duration = 100);
+    void onProtBtnClicked();
     void onGoBtnClicked();
     void onCancelBtnClicked();
     void onAutSuccess(const QString& folderPath);
     void onAutFailed(const QString& reason);
+    void onAutPathGet(const QString& folderPath);
 };
 #endif // MAINWINDOW_H

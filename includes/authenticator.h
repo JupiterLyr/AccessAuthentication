@@ -13,10 +13,12 @@ public:
 
 public slots:
     void authenticate(const QString& identifier, const QString& password);
+    void searchPath(const QString& identifier);
 
 signals:
     void autSuccess(const QString& folderPath);
     void autFailed(const QString& reason);
+    void autPath(const QString& folderPath);
 
 private:
     void loadBinFile(const QString& binPath);

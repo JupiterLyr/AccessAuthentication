@@ -41,7 +41,7 @@ namespace Ui {
         QVBoxLayout* mainLayout = new QVBoxLayout(mainWidget);
         mainLayout->setContentsMargins(24, 18, 26, 18); // Left, Up, Right, Bottom
 
-        uiTitle = new QLabel("受保护文件访问认证");
+        uiTitle = new QLabel("受保护文件夹访问认证");
         uiTitle->setStyleSheet("font-size: 13pt; font-weight: bold;");
         uiTitle->setAlignment(Qt::AlignCenter);
         uiTitle->setFixedHeight(50);

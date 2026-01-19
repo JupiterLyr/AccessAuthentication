@@ -1,9 +1,10 @@
 # Access Authentication
 ## What is this?
-The software is designed to protect the access rights of files or folders that need to be kept secret.
-Every time you compile, it will read the user name and password you set as well as the corresponding accessible address.</br>
+The software is designed to protect the access rights of folders that need to be kept secret.
+Every time you compile, it will read the identifier and password you set as well as the corresponding accessible address.</br>
 Among them, the password will be stored in some encrypted method.
-When using, you need to enter the user name (or identification name) and its correct password to jump out of the corresponding folder window.
+When using, you need to enter the identifier and its correct password to jump out of the corresponding folder window.</br>
+Remember to lock the folder that needs to be protected again after using it!
 
 ## How to use?
 1. Create a CSV file. You can use `tools/reg.csv` as a template to fill in the information according to the format requirements.
@@ -11,21 +12,26 @@ When using, you need to enter the user name (or identification name) and its cor
 3. Run `config_gen.exe`, select the CSV file with just set information and press enter, then the new configuration file should be written.
 4. **Delete the CSV file** to avoid information leakage!
 5. Run the main software `AccessAuthentication.exe`. Only by entering the correct identifier and password can you access the specified folder.
+6. **Click "Protect" to lock the folder** after accessing it. Otherwise, your folder will be unprotected.
+7. Click "Cancel" to exit. To move the window, please hold down the upper left corner and drag.
 
 ## Warning
 - The files on the removable disk **have NOT been tested** yet!
 
 # 访问认证软件
 ## 说明
-软件旨在为保密文件或文件夹的访问权限提供保护措施。每次编译都会针对性地读取您设定的用户名和密码，以及对应的可访问地址。</br>
-其中，密码以某种加密方式储存。使用时，需要输入用户名（或标识名）及其正确密码，才能跳转出对应的文件夹窗口。
+软件旨在为保密文件夹的访问权限提供保护措施。每次编译都会针对性地读取您设定的标识符和密码，以及对应的可访问地址。</br>
+其中，密码以某种加密方式储存。使用时，需要输入标识符及其正确密码，才能跳转出对应的文件夹窗口。</br>
+使用完毕后，记得重新给需要保护的文件夹上锁！
 
 ## 使用方法
 1. 首先创建一个 CSV 文件，可以使用 `tools/reg.csv` 作为模板，根据格式要求填写信息。
 2. 若 CSV 文件打开后是乱码，请尝试使用记事本打开。
 3. 运行 `config_gen.exe`，选择刚刚写好配置的 CSV 文件并回车，新的配置文件即可写入。
 4. **删除 CSV 文件**以免泄漏信息！
-5. 运行主软件 `AccessAuthentication.exe`，只有输入正确的标识符和密码，才能访问指定的文件夹。
+5. 运行主软件 `AccessAuthentication.exe`，只有输入正确的标识符和密码，点击 “确定” 才能访问指定的文件夹。
+6. 文件夹访问完毕后，再**点击 “保护” 为文件夹上锁**，否则你的文件夹将处于未保护状态。
+7. 退出软件请点击 “取消”，挪动窗口请按住左上角拖动。
 
 ## 注意
 - 目前，尚未对可移动磁盘上的文件进行测试！
@@ -35,17 +41,23 @@ When using, you need to enter the user name (or identification name) and its cor
 # Update Logs - 更新日志
 This chapter is written in Chinese for record only.
 
+### Version 1.2.0
+包含文件保护-释放机制的首个版本！
+- 开发并部署了 `Protect` 的文件夹打包伪装功能
+- 完善了打包、解包行为并通过测试
+- 将消息弹窗的内容规范化、合理化，不轻易显示文件夹位置
+#### To Do List
+1. 可能会对除密码外的明文也进行加密存储，防止非法泄漏
+2. 当前无法使用软件解析可移动磁盘上的文件，因为绝对路径不固定，此后将想方设法解决此问题
+
 ### Vesion 1.1.3
 累积更新 v1.1.1 ~ v1.1.3，当前版本**测试未通过**，仅用于备份
 - 开发了文件夹打包伪装功能，目前尚未部署
 - 在 UI 中增设了 `Protect` 按钮，用于被解包的文件夹重新打包伪装，目前拟采用仅验证标识符的方式
 - 修改了验证通过后的实现逻辑
-#### To Do List
-1. 将 `Protect` 功能部署到软件中
-2. 完善解包、打包等功能
 
 ### Version 1.1.0
-首个可用版本！已发布至 `develop` 和 `main` 分支。
+首个可用验证模块的版本！
 - 提高了 `encoder.h` 的加密算法复杂度
 - 配置了验证机制，可以在本地正常使用
 #### Issues

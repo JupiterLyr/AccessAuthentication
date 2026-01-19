@@ -3,13 +3,13 @@
 #include <QDataStream>
 #include <QFile>
 
-Authenticator::Authenticator(const QString& binPath, QObject* parent): QObject(parent) {
+Authenticator::Authenticator(const QString& binPath, QObject* parent) : QObject(parent) {
     loadBinFile(binPath);
 }
 
-void Authenticator::loadBinFile(const QString& binPath){
+void Authenticator::loadBinFile(const QString& binPath) {
     QFile file(binPath);
-    if (!file.open(QIODevice::ReadOnly)){
+    if (!file.open(QIODevice::ReadOnly)) {
         emit autFailed(
             "Unable to load authentication data file!\n"
             "无法加载认证数据文件！"
@@ -54,4 +54,13 @@ void Authenticator::authenticate(const QString& identifier, const QString& passw
         return;
     }
     emit autSuccess(it.value().second);
+}
+
+void Authenticator::searchPath(const QString& identifier) {
+    auto it = m_tagData.find(identifier);
+    if (it == m_tagData.end()) {
+        emit autFailed("Identifier does not exist!\n标识符不存在！");
+        return;
+    }
+    emit autPath(it.value().second);
 }
