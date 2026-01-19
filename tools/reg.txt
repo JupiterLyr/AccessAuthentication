@@ -1,0 +1,7 @@
+# 三部分信息的分隔符为“|”，每行为一个数据标签，标准格式：标识符|密码|跳转路径
+# 例如，下面的配置表示标识符为“照片”，密码为“Abc666”，验证通过后访问的文件夹为“D:\我的照片\2024-01-01”
+# 照片|Abc666|D:\我的照片\2024-01-01
+# 行首的井号表示注释，配置生成器不会读取行首井号后的内容；但在行的中间出现井号依旧会被读取
+# 在运行 config_gen.exe 后，请及时删除下方的配置内容，以免造成泄漏
+# Excuse me for not stating the English explanation. You can translate the contents above.
+# ========== Write your configurations below ==========

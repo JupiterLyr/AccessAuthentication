@@ -1,0 +1,11 @@
+// 本文件仅用于记录架构，具体算法不予公开
+#ifndef ENCODER_H
+#define ENCODER_H
+
+/* #include */
+
+QString password_encode(const QString& text);
+QString obfString(const QString& text);
+QString deobfString(const QString& obfuscated);
+
+#endif

@@ -64,7 +64,7 @@ void MainWindow::refreshTexts() {
 /// @brief 界面渐隐
 /// @param duration 持续时间 (ms)
 void MainWindow::fadeOutUI(int duration) {
-    QPropertyAnimation *animation = new QPropertyAnimation(this, "windowOpacity");
+    QPropertyAnimation* animation = new QPropertyAnimation(this, "windowOpacity");
     animation->setDuration(duration);
     animation->setStartValue(1.0);
     animation->setEndValue(0.0);
@@ -88,6 +88,12 @@ void MainWindow::onGoBtnClicked() {
 }
 
 void MainWindow::onCancelBtnClicked() {
+    auto ret = QMessageBox::question(this, "Exit",
+        "Do you want to quit?\n您确定要退出吗？",
+        QMessageBox::Yes | QMessageBox::No
+    );
+    if (ret == QMessageBox::No)
+        return;
     int ms = 200;
     fadeOutUI(ms);
     QTimer::singleShot(ms + 20, this, &MainWindow::close);
@@ -143,11 +149,11 @@ void MainWindow::onAutPathGet(const QString& folderPath) {
             "个别文件因占用而删除失败！为确保数据安全，请手动删除原文件夹。\n"
             "Otherwise, the next time you visit the folder, "
             "you won't be shown all the files until you manually delete the incomplete folder.\n"
-            "否则，下次访问该文件夹时，将不会为您展示全部文件，直到您手动删除。\n"
+            "否则，下次访问该文件夹时，将不会为您展示全部文件，直到您手动删除。\n\n"
             "Folder Path: " + folderPath
         );
     }
     QMessageBox::information(this, "Success",
-        "Folder has been protected successfully.\n文件夹已被保护。"
+        "Folder has been protected successfully.\n文件夹已成功保护。"
     );
 }

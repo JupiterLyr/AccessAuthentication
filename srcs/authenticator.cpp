@@ -23,15 +23,18 @@ void Authenticator::loadBinFile(const QString& binPath) {
     for (quint32 i = 0; i < tagCount; ++i) {
         quint32 strLen;
         QString identifier, passwordHash, folderPath;
+        // 标识符（解混淆）
         stream >> strLen;
         QByteArray idData = file.read(strLen);
-        identifier = QString::fromUtf8(idData);
+        identifier = deobfString(QString::fromUtf8(idData));
+        // 密码
         stream >> strLen;
         QByteArray hashData = file.read(strLen);
         passwordHash = QString::fromLatin1(hashData);
+        // 路径（解混淆）
         stream >> strLen;
         QByteArray pathData = file.read(strLen);
-        folderPath = QString::fromUtf8(pathData);
+        folderPath = deobfString(QString::fromUtf8(pathData));
 
         if (!identifier.isEmpty() && !passwordHash.isEmpty())
             m_tagData[identifier] = qMakePair(passwordHash, folderPath);
@@ -48,7 +51,7 @@ void Authenticator::authenticate(const QString& identifier, const QString& passw
         emit autFailed("Identifier does not exist!\n标识符不存在！");
         return;
     }
-    QString inputHash = password_encode(password);
+    QString inputHash = passwordEncode(password);
     if (it.value().first != inputHash) {
         emit autFailed("Incorrect password!\n密码错误！");
         return;
