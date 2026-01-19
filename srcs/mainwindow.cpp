@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QMessageBox>
 #include <QWidget>
+#include "locker.h"
 #include "ui.h"
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
@@ -41,6 +42,7 @@ void MainWindow::refreshTexts() {
         ui->uiTitle->setText("Protected Files\nAccess Authentication");
         ui->id_label->setText("Identifier");
         ui->pw_label->setText("Password");
+        ui->prot_btn->setText("Protect");
         ui->go_btn->setText("Confirm");
         ui->cancel_btn->setText("Cancel");
         ui->lang_btn->setText("语言：中　　");
@@ -49,6 +51,7 @@ void MainWindow::refreshTexts() {
         ui->uiTitle->setText("受保护文件访问认证");
         ui->id_label->setText("标 识 符");
         ui->pw_label->setText("密 　 码");
+        ui->prot_btn->setText("保　护");
         ui->go_btn->setText("确　认");
         ui->cancel_btn->setText("取　消");
         ui->lang_btn->setText("　　Lang: En.");
@@ -79,8 +82,25 @@ void MainWindow::onCancelBtnClicked() {
 }
 
 void MainWindow::onAutSuccess(const QString& folderpath) {
+    QString dbPath = folderpath + ".db";
+    if (!QFile::exists(dbPath)) {
+        QMessageBox::warning(this, "Warning", "DB file not found:\n未找到对应的数据库文件：\n" + dbPath);
+        return;
+    }
+    if (!QDir(folderpath).exists()) {
+        if (!db2folder(dbPath, folderpath)) {
+            QMessageBox::critical(this, "Error", "Failed to restore folder!\n还原文件夹失败！");
+            return;
+        }
+        QFile::remove(dbPath);
+    }
     if (!QDesktopServices::openUrl(QUrl::fromLocalFile(folderpath)))
         QMessageBox::warning(this, "Warning", "Cannot open folder:\n无法打开文件夹：\n" + folderpath);
+    else
+        QMessageBox::information(this, "Tips",
+            "为确保您的数据安全，使用完毕请及时点击 “保护” 来保护文件夹数据。\n"
+            "To ensure the safety of your data, please click \"Protect\" in time to protect the folder data after use."
+        );
 }
 
 void MainWindow::onAutFailed(const QString& reason) {

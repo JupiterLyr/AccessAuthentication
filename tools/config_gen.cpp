@@ -1,8 +1,8 @@
 #include <QCoreApplication>
+#include <QDataStream>
 #include <QDir>
 #include <QFile>
 #include <QTextStream>
-#include <QDataStream>
 #include "encoder.h"
 
 /**

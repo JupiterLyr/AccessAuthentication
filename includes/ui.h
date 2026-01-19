@@ -18,6 +18,7 @@ namespace Ui {
         QLineEdit* id_input;
         QLabel* pw_label;
         QLineEdit* pw_input;
+        QPushButton* prot_btn;
         QPushButton* go_btn;
         QPushButton* cancel_btn;
         SlideButton* lang_btn;

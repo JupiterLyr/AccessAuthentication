@@ -13,7 +13,7 @@
 
 namespace Ui {
     void MainWindow::setupUi(QMainWindow* mainWindow) {
-        int MAIN_WIDTH = 320, MAIN_HEIGHT = 280, BLUR_RADIUS = 16;
+        int MAIN_WIDTH = 360, MAIN_HEIGHT = 280, BLUR_RADIUS = 16;
         QWidget* centralWidget = new QWidget(mainWindow);
         mainWindow->setCentralWidget(centralWidget);
         centralWidget->setFixedSize(MAIN_WIDTH + int(BLUR_RADIUS * 1.5), MAIN_HEIGHT + int(BLUR_RADIUS * 1.5));
@@ -64,18 +64,25 @@ namespace Ui {
         pwLayout->addWidget(pw_input, 3);
 
         QHBoxLayout* btnLayout = new QHBoxLayout(mainWidget); // button layout
+        prot_btn = new QPushButton("保　护");
+        prot_btn->setObjectName("protectBtn");
+        prot_btn->setProperty("btnStyle", "primary");
+        prot_btn->setCursor(Qt::PointingHandCursor);
+        prot_btn->setFixedWidth(100);
+        prot_btn->setFocusPolicy(Qt::NoFocus);
         go_btn = new QPushButton("确　认");
         go_btn->setObjectName("goBtn");
         go_btn->setProperty("btnStyle", "primary");
         go_btn->setCursor(Qt::PointingHandCursor);
-        go_btn->setFixedWidth(120);
+        go_btn->setFixedWidth(100);
         go_btn->setFocusPolicy(Qt::NoFocus);
         cancel_btn = new QPushButton("取　消");
         cancel_btn->setObjectName("cancelBtn");
         cancel_btn->setProperty("btnStyle", "primary");
         cancel_btn->setCursor(Qt::PointingHandCursor);
-        cancel_btn->setFixedWidth(120);
+        cancel_btn->setFixedWidth(100);
         cancel_btn->setFocusPolicy(Qt::NoFocus);
+        btnLayout->addWidget(prot_btn, 1);
         btnLayout->addWidget(go_btn, 1);
         btnLayout->addWidget(cancel_btn, 1);
 

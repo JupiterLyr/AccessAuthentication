@@ -35,10 +35,21 @@ When using, you need to enter the user name (or identification name) and its cor
 # Update Logs - 更新日志
 This chapter is written in Chinese for record only.
 
+### Vesion 1.1.3
+累积更新 v1.1.1 ~ v1.1.3，当前版本**测试未通过**，仅用于备份
+- 开发了文件夹打包伪装功能，目前尚未部署
+- 在 UI 中增设了 `Protect` 按钮，用于被解包的文件夹重新打包伪装，目前拟采用仅验证标识符的方式
+- 修改了验证通过后的实现逻辑
+#### To Do List
+1. 将 `Protect` 功能部署到软件中
+2. 完善解包、打包等功能
+
 ### Version 1.1.0
 首个可用版本！已发布至 `develop` 和 `main` 分支。
 - 提高了 `encoder.h` 的加密算法复杂度
 - 配置了验证机制，可以在本地正常使用
+#### Issues
+- 文件与文件夹的安全性需要由用户自行配置，使用难度大，后续将解决此问题</br>The security of files and folders needs to be configured by users themselves, which is difficult to use. This problem will be solved later.
 
 ### Version 1.0.0-beta
 测试版，旨在测试该软件各模块能否正常运作。

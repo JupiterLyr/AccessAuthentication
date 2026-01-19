@@ -5,6 +5,11 @@ QPushButton[btnStyle="primary"] {
     font-weight: 500;
 }
 
+QPushButton#protectBtn {
+    background-color:rgb(244, 255, 245);
+    border: 1.5px solid rgb(91, 224, 105);
+}
+
 QPushButton#goBtn {
     background-color:rgb(253, 249, 245);
     border: 1.5px solid rgb(250, 198, 142);
@@ -15,12 +20,21 @@ QPushButton#cancelBtn {
     border: 1.5px solid rgb(253, 149, 149);
 }
 
+QPushButton:hover#protectBtn {
+    background-color:rgb(221, 253, 234);
+}
+
 QPushButton:hover#goBtn {
     background-color:rgb(253, 243, 221);
 }
 
 QPushButton:hover#cancelBtn {
     background-color:rgb(255, 230, 227);
+}
+
+QPushButton:pressed#protectBtn {
+    background-color:rgb(77, 223, 116);
+    padding-top: 7px; /* 轻微下压感 */
 }
 
 QPushButton:pressed#goBtn {
