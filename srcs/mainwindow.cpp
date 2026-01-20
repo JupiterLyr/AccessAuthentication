@@ -5,8 +5,9 @@
 #include <QDir>
 #include <QFile>
 #include <QFileDialog>
-#include <QTimer>
 #include <QMessageBox>
+#include <QStorageInfo>
+#include <QTimer>
 #include <QWidget>
 #include "locker.h"
 #include "ui.h"
@@ -100,21 +101,27 @@ void MainWindow::onCancelBtnClicked() {
 }
 
 void MainWindow::onAutSuccess(const QString& folderPath) {
-    QString dbPath = folderPath + ".db";
+    QString _folderpath = folderPath;
+    if (folderPath.startsWith('Z')) {
+        QStorageInfo appDir(QCoreApplication::applicationDirPath());
+        QString drive_letter = appDir.rootPath().left(1);
+        _folderpath.replace(0, 1, drive_letter);
+    }
+    QString dbPath = _folderpath + ".db";
     if (!QFile::exists(dbPath)) {
         QMessageBox::warning(this, "Warning",
             "Folder is not protected or the path does not exist!\n文件夹未被保护，或路径不存在！"
         );
         return;
     }
-    if (!QDir(folderPath).exists()) {
-        if (!db2folder(dbPath, folderPath)) {
+    if (!QDir(_folderpath).exists()) {
+        if (!db2folder(dbPath, _folderpath)) {
             QMessageBox::critical(this, "Error", "Failed to restore folder!\n还原文件夹失败！");
             return;
         }
         QFile::remove(dbPath);
     }
-    if (!QDesktopServices::openUrl(QUrl::fromLocalFile(folderPath)))
+    if (!QDesktopServices::openUrl(QUrl::fromLocalFile(_folderpath)))
         QMessageBox::critical(this, "Fail to open", "Verification error!\n校验错误！");
     else
         QMessageBox::information(this, "Tips",

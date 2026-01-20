@@ -88,7 +88,9 @@ int generateConfig(const QString& txtPath, const QString& binPath) {
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
-    auto ret = QMessageBox::information(nullptr, "How to use",
+    QMessageBox* msgbox_how2use = new QMessageBox();
+    msgbox_how2use->setWindowTitle("How to use");
+    msgbox_how2use->setText(
         "1. Select the TXT file with your configurations to be read.\n"
         "2. The content of the TXT file contains an identifier, a password, and a folder path that jumps after verification, "
         "which are separated by a symbol \"|\" with no spaces on both sides, i.e.:\n"
@@ -105,9 +107,11 @@ int main(int argc, char* argv[]) {
         "3. 若软件用于可移动存储介质（光盘、U盘、移动硬盘等），请将 “跳转文件夹路径” 的盘符改为 “Z:”，避免盘符更改。"
         "软件会自动识别所谓的Z盘，并重定向至软件所在盘符。\n"
         "4. TXT 文件中，行首的 # 可用于注释。\n"
-        "5. 文件读取后会显示有效配置信息的数量，配置文件会自动生成，此后即可正常使用主软件。\n\n",
-        QMessageBox::Ok | QMessageBox::Close
+        "5. 文件读取后会显示有效配置信息的数量，配置文件会自动生成，此后即可正常使用主软件。"
     );
+    msgbox_how2use->setIcon(QMessageBox::NoIcon);
+    msgbox_how2use->setStandardButtons(QMessageBox::Ok | QMessageBox::Close);
+    auto ret = msgbox_how2use->exec();
     if (ret == QMessageBox::Close)
         return 0;
     QString txtPath = QFileDialog::getOpenFileName(
