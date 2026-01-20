@@ -56,6 +56,7 @@ add_executable(
 target_link_libraries(
     config_gen PRIVATE
     Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Widgets
 )
 
 # ==================== 安装规则 ====================

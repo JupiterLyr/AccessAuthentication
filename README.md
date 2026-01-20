@@ -43,15 +43,19 @@ Remember to lock the folder that needs to be protected again after using it!
 # Update Logs - 更新日志
 This chapter is written in Chinese for record only.
 
+### Version 1.3.1
+- 将 `config_gen.cpp` 原先的输入路径改为弹出文件对话框选择文件，并优化了传递逻辑
+- 加入了使用方法来引导用户，并预先加入了可移动存储媒介的盘符处理的解决策略说明
+#### Issues
+1. 当路径指向的是文件而非文件夹时，仍然无法完美处理
+2. 当前无法使用软件解析可移动磁盘上的文件，因为绝对路径不固定，此后将想方设法解决此问题
+
 ### Version 1.3.0
 累积更新 v1.2.1、v1.2.2、v1.3.0，**对文件夹而言的3S版本**：Safe + Stable + Simple！
 - 对原本的配置信息加入了混淆机制，防止配置文件内容泄漏
 - 用 `encoder.txt` 记录了编码算法框架
 - 原先的工具要求用户使用 CSV 文件作为辅助文件，用以写入配置；为了更加用户友好，现改为了 TXT 文件
 - 加入防误触机制，用户点击 `Cancel` 按钮后，需二次确认是否关闭
-#### Issues
-1. 当路径指向的是文件而非文件夹时，仍然无法完美处理
-2. 当前无法使用软件解析可移动磁盘上的文件，因为绝对路径不固定，此后将想方设法解决此问题
 
 ### Version 1.2.0
 包含文件保护-释放机制的首个版本！
