@@ -59,12 +59,20 @@ Remember to lock the folder that needs to be protected again after using it!
 # Update Logs - 更新日志
 This chapter is written in Chinese for record only.
 
-### Version 1.3.4-beta
-累积更新 v1.3.2、v1.3.3-beta，现已支持解读以 `Z:\` 开头的路径，将重定向至软件运行位置所在盘符，该功能仅对 Windows 系统生效。</br>
+### Version 1.4.1-beta
+累积更新 v1.4.0、v1.4.1-beta，现已支持解读以 `Z:\` 开头的路径，将重定向至软件运行位置所在盘符。该功能仅在 Windows 系统上测试通过，其余系统尚未测试。</br>
 此次更新旨在解决可移动存储媒介在 Windows 系统中盘符可变的问题。实际上，当用户在配置跳转路径时，若使用 `Z:\` 作为盘符，则表示待跳转的文件夹与该软件运行路径所在盘符相同。当用户把软件放在可移动存储媒介上时，相当于利用了这一特性。</br>
 This update aims to solve the problem that the drive letter of removable storage media can be changed in Windows system. In fact, when the user configures the jump path, if `Z:\` is used as the drive letter, it means that the folder to jump is the same as the drive letter where the software runs. When users put the software on removable storage media, it is equivalent to taking advantage of this feature.
+- 生成 DB 文件后，若在 Windows 系统下运行，则将文件设置为隐藏属性和受系统保护属性，一般情况下其 DB 文件将不可见
+- 修复了部分 bug：当文件夹不存在时，现在不会错误地创建 DB 文件了；可移动存储媒介的校验问题已解决
+#### Issues
+- 【重要】当文件夹体积庞大时，不开启新线程将导致主窗口冻结，一旦发生崩溃，将造成不可逆的损失
+- 当标识符相同而密码不同时，只会定位到其中一条跳转路径。需要在设定标识符时就警告用户
+
+### Version 1.3.4-beta
+累积更新 v1.3.2、v1.3.3-beta、v1.3.4-beta。部分 bug 尚未解决。
 - 优化了 `config_gen.cpp` 和 `mainwindow.cpp` 中的部分逻辑
-- 理论上支持解析可移动磁盘上的文件，目前正在测试中
+- 开发解析可移动磁盘上的文件的方法，目前正在测试中
 - 在 `config_gen.exe` 运行时弹出的使用说明中，图标已被移除
 - 更新了软件说明文档，加入了更详细的使用说明
 

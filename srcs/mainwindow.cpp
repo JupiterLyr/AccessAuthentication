@@ -136,19 +136,31 @@ void MainWindow::onAutFailed(const QString& reason) {
 }
 
 void MainWindow::onAutPathGet(const QString& folderPath) {
-    if (folderPath.isEmpty())
+    if (folderPath.isEmpty()) // 传入空字符串
         return;
-    QFileInfo folderInfo(folderPath);
+    QString _folderpath = folderPath;
+    if (folderPath.startsWith('Z')) {
+        QStorageInfo appDir(QCoreApplication::applicationDirPath());
+        QString drive_letter = appDir.rootPath().left(1);
+        _folderpath.replace(0, 1, drive_letter);
+    }
+    QFileInfo folderInfo(_folderpath);
     QString dbPath = folderInfo.absolutePath() + "/" + folderInfo.fileName() + ".db";
     if (QFile::exists(dbPath)) {
         QMessageBox::warning(this, "Warning", "Folder is already protected!\n文件夹已被保护！");
         return;
     }
-    if (!folder2db(folderPath, dbPath)) {
+    if (!folderInfo.exists() || !folderInfo.isDir()) {
+        QMessageBox::critical(this, "Error", "Folder not found!\n文件夹不存在！");
+        return;
+    }
+    if (!folder2db(_folderpath, dbPath)) {
         QMessageBox::critical(this, "Error", "Failed to protect folder!\n文件夹保护失败！");
         return;
     }
-    QDir dir(folderPath);
+    else
+        protectDbFile(dbPath);
+    QDir dir(_folderpath);
     if (!dir.removeRecursively()) {
         QMessageBox::warning(this, "Warning",
             "Failed to delete individual files due to occupation! "
@@ -157,7 +169,7 @@ void MainWindow::onAutPathGet(const QString& folderPath) {
             "Otherwise, the next time you visit the folder, "
             "you won't be shown all the files until you manually delete the incomplete folder.\n"
             "否则，下次访问该文件夹时，将不会为您展示全部文件，直到您手动删除。\n\n"
-            "Folder Path: " + folderPath
+            "Folder Path: " + _folderpath
         );
     }
     QMessageBox::information(this, "Success",

@@ -5,5 +5,6 @@
 
 bool folder2db(const QString& folderPath, const QString& dbPath);
 bool db2folder(const QString& dbPath, const QString& outputDir);
+bool protectDbFile(const QString& filePath);
 
 #endif

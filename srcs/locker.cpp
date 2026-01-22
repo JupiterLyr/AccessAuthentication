@@ -2,6 +2,9 @@
 #include <QDir>
 #include <QDirIterator>
 #include <QFile>
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
 
 bool folder2db(const QString& folderPath, const QString& dbPath) {
     QFile outFile(dbPath);
@@ -70,4 +73,20 @@ bool db2folder(const QString& dbPath, const QString& outputDir) {
     }
     inFile.close();
     return true;
+}
+
+/// @brief 对 windows 系统附加系统文件和隐藏属性
+bool protectDbFile(const QString& filePath) {
+#ifdef Q_OS_WIN
+    std::wstring wpath = filePath.toStdWString();
+    DWORD attrs = GetFileAttributesW(wpath.c_str());
+    if (attrs == INVALID_FILE_ATTRIBUTES)
+        return false;
+    attrs |= FILE_ATTRIBUTE_HIDDEN;
+    attrs |= FILE_ATTRIBUTE_SYSTEM;
+    return SetFileAttributesW(wpath.c_str(), attrs);
+#else
+    Q_UNUSED(filePath);
+    return false;
+#endif
 }
