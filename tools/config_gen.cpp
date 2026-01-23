@@ -4,6 +4,9 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QPushButton>
+#include <QSet>
+#include <QTimer>
 #include "encoder.h"
 
 /**
@@ -13,7 +16,7 @@
 int generateConfig(const QString& txtPath, const QString& binPath) {
     /** @hiderefs
      * TXT格式: 标识符|明文密码|文件夹路径
-     * 注意分隔符是 “|”，因此在标识符、密码、文件夹路径中均不可出现该符号！
+     * 分隔符是 “|”，因此在标识符、密码、文件夹路径中均不可出现该符号；标识符不得重复
      * BIN格式:
      *   [4字节] 标识符数量
      *   循环每个标识符:
@@ -33,11 +36,14 @@ int generateConfig(const QString& txtPath, const QString& binPath) {
         QString folderPath;
     };
     QList<AccessData> tags;
+    QSet<QString> dedupIds;
+    int lineCnt = 0;
 
     QTextStream stream(&txtFile); // @hiderefs 默认UTF-8
     bool invalid_line = false;
     while (!stream.atEnd()) {
         QString line = stream.readLine().trimmed();
+        lineCnt++;
         if (line.isEmpty() || line.startsWith('#'))  // 支持以行首 # 作为注释
             continue;
         QStringList parts = line.split('|');
@@ -45,12 +51,23 @@ int generateConfig(const QString& txtPath, const QString& binPath) {
             invalid_line = true;
             continue;
         }
+        QString currentId = parts[0].trimmed();
+        if (dedupIds.contains(currentId)) {
+            txtFile.close();
+            QMessageBox::critical(nullptr, "Error",
+                "Same identifier is contained in the configuration file!\n" +
+                QString("配置文件中包含了相同的标识符！\n\nLine: %1    ID: %2").arg(lineCnt).arg(currentId)
+            );
+            return -1;
+        }
         AccessData tag;
-        tag.identifier = parts[0].trimmed();
+        tag.identifier = currentId;
         tag.passwordHash = passwordEncode(parts[1].trimmed());  // 不存储明文
         tag.folderPath = parts[2].trimmed();
-        if (!tag.identifier.isEmpty() && !tag.passwordHash.isEmpty())
+        if (!tag.identifier.isEmpty() && !tag.passwordHash.isEmpty()) {
             tags.append(tag);
+            dedupIds.insert(currentId);
+        }
     }
     txtFile.close();
     if (invalid_line)
@@ -98,7 +115,8 @@ int main(int argc, char* argv[]) {
         "3. If the software is used for removable storage media (CD-ROM, USB flash drive, removable hard disk, etc.), "
         "please change the drive letter of the \"Jump Folder Path\" to \"Z:\" to avoid the drive letter change of this storage media. "
         "The software will automatically identify the so-called \"Z:\" and redirect to the drive letter where the software is located.\n"
-        "4. In the TXT file, the # at the beginning of the line is used as a comment.\n"
+        "4. In the TXT file, the # at the beginning of the line is used as a comment. "
+        "Identifiers cannot contain duplicates. Passwords should be composed of letters, numbers and symbols.\n"
         "5. After reading, the number of valid configuration information will be displayed. "
         "The configuration file will be generated automatically, and then the main software can be used normally.\n\n"
         "1. 选择包含待读取配置的 TXT 文件。\n"
@@ -106,12 +124,24 @@ int main(int argc, char* argv[]) {
         "\t标识符|密码|文件夹路径\n"
         "3. 若软件用于可移动存储介质（光盘、U盘、移动硬盘等），请将 “跳转文件夹路径” 的盘符改为 “Z:”，避免盘符更改。"
         "软件会自动识别所谓的Z盘，并重定向至软件所在盘符。\n"
-        "4. TXT 文件中，行首的 # 可用于注释。\n"
-        "5. 文件读取后会显示有效配置信息的数量，配置文件会自动生成，此后即可正常使用主软件。"
+        "4. TXT 文件中，行首的 # 可用于注释。标识符不能重复，密码应由英文字母、数字、符号构成。\n"
+        "5. 文件读取后会显示有效配置信息的数量，配置文件会自动生成，此后即可正常使用主软件。\n\n"
+        "Read the instructions carefully. Select the file by clicking OK after 10 seconds.\n"
+        "请仔细阅读使用须知。10秒后，点击 OK 选择文件。"
     );
     msgbox_how2use->setIcon(QMessageBox::NoIcon);
+    msgbox_how2use->setWindowFlags(msgbox_how2use->windowFlags() & ~Qt::WindowCloseButtonHint); // 禁用窗口关闭
     msgbox_how2use->setStandardButtons(QMessageBox::Ok | QMessageBox::Close);
+    QPushButton* msgOkBtn = qobject_cast<QPushButton*>(msgbox_how2use->button(QMessageBox::Ok));
+    if (msgOkBtn)
+        msgOkBtn->setEnabled(false);
+    QTimer::singleShot(10000, [msgbox_how2use]() {
+        QPushButton* btn = qobject_cast<QPushButton*>(msgbox_how2use->button(QMessageBox::Ok));
+        if (btn)
+            btn->setEnabled(true);
+        });
     auto ret = msgbox_how2use->exec();
+    msgbox_how2use->deleteLater();
     if (ret == QMessageBox::Close)
         return 0;
     QString txtPath = QFileDialog::getOpenFileName(
