@@ -1,5 +1,11 @@
+<!DOCTYPE RCC>
 <RCC>
   <qresource prefix="/">
     <file>resources/drag-dots.svg</file>
+    <file>resources/help_icon.svg</file>
+    <file>resources/help.md</file>
+    <file>resources/button.qss</file>
+    <file>resources/line_edit.qss</file>
+    <file>resources/ui_bg.qss</file>
   </qresource>
 </RCC>

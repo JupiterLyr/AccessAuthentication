@@ -6,6 +6,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include "DragWidget.h"
+#include "HelpDialog.h"
 #include "SlideButton.h"
 
 namespace Ui {
@@ -24,6 +25,7 @@ namespace Ui {
         SlideButton* lang_btn;
 
         DragWidget* drag_sphere; // 拖拽部件
+        HelpButton* help_btn;
     };
 }
 

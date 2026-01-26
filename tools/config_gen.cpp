@@ -4,10 +4,12 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QObject>
 #include <QPushButton>
 #include <QSet>
 #include <QTimer>
 #include "encoder.h"
+#include "HelpDialog.h"
 
 /**
  * @brief 生成二进制配置文件
@@ -126,20 +128,26 @@ int main(int argc, char* argv[]) {
         "软件会自动识别所谓的Z盘，并重定向至软件所在盘符。\n"
         "4. TXT 文件中，行首的 # 可用于注释。标识符不能重复，密码应由英文字母、数字、符号构成。\n"
         "5. 文件读取后会显示有效配置信息的数量，配置文件会自动生成，此后即可正常使用主软件。\n\n"
-        "Read the instructions carefully. Select the file by clicking OK after 10 seconds.\n"
-        "请仔细阅读使用须知。10秒后，点击 OK 选择文件。"
+        "Read the instructions carefully, then select the file by clicking OK.\n"
+        "请仔细阅读使用须知，然后点击 OK 选择文件。"
     );
     msgbox_how2use->setIcon(QMessageBox::NoIcon);
     msgbox_how2use->setWindowFlags(msgbox_how2use->windowFlags() & ~Qt::WindowCloseButtonHint); // 禁用窗口关闭
     msgbox_how2use->setStandardButtons(QMessageBox::Ok | QMessageBox::Close);
+    // QAbstractButton* helpBtn = msgbox_how2use->addButton("Help", QMessageBox::InvalidRole);
     QPushButton* msgOkBtn = qobject_cast<QPushButton*>(msgbox_how2use->button(QMessageBox::Ok));
     if (msgOkBtn)
         msgOkBtn->setEnabled(false);
-    QTimer::singleShot(10000, [msgbox_how2use]() {
+    QTimer::singleShot(3000, [msgbox_how2use]() {
         QPushButton* btn = qobject_cast<QPushButton*>(msgbox_how2use->button(QMessageBox::Ok));
         if (btn)
             btn->setEnabled(true);
         });
+    // QObject::connect(helpBtn, &QPushButton::clicked, msgbox_how2use, []() {
+    //     HelpDialog* dlg = new HelpDialog();
+    //     dlg->setAttribute(Qt::WA_DeleteOnClose);
+    //     dlg->show();  // 非模态显示
+    //     });
     auto ret = msgbox_how2use->exec();
     msgbox_how2use->deleteLater();
     if (ret == QMessageBox::Close)

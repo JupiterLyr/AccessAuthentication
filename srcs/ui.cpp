@@ -8,12 +8,11 @@
 #include <QLayout>
 #include <QMessageBox>
 #include <QWidget>
-#include "DragWidget.h"
-#include "SlideButton.h"
 
 namespace Ui {
     void MainWindow::setupUi(QMainWindow* mainWindow) {
         int MAIN_WIDTH = 360, MAIN_HEIGHT = 280, BLUR_RADIUS = 16;
+        int INNER_L = 24, INNER_R = 26, INNER_U = 18, INNER_B = 18;
         QWidget* centralWidget = new QWidget(mainWindow);
         mainWindow->setCentralWidget(centralWidget);
         centralWidget->setFixedSize(MAIN_WIDTH + int(BLUR_RADIUS * 1.5), MAIN_HEIGHT + int(BLUR_RADIUS * 1.5));
@@ -39,7 +38,7 @@ namespace Ui {
         centralLayout->addWidget(mainWidget, 0, 0, Qt::AlignCenter);
 
         QVBoxLayout* mainLayout = new QVBoxLayout(mainWidget);
-        mainLayout->setContentsMargins(24, 18, 26, 18); // Left, Up, Right, Bottom
+        mainLayout->setContentsMargins(INNER_L, INNER_U, INNER_R, INNER_B); // Left, Up, Right, Bottom
 
         uiTitle = new QLabel("受保护文件夹访问认证");
         uiTitle->setStyleSheet("font-size: 13pt; font-weight: bold;");
@@ -120,10 +119,19 @@ namespace Ui {
             "image: url(:/resources/drag-dots.svg);"
         );
         drag_sphere->raise();
+
+        help_btn = new HelpButton(mainWidget);
+        help_btn->setFixedSize(24, 24);
+        help_btn->raise();
+
         QMargins mainMargin = mainWidget->contentsMargins();
         drag_sphere->move(mainMargin.left() + 16, mainMargin.top() + 16);
+        help_btn->move(
+            mainWidget->width() - mainMargin.right() - help_btn->width() - 16,
+            mainWidget->height() - mainMargin.bottom() - help_btn->height() - 16
+        );
 
-        QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect(mainWidget);
+        QGraphicsDropShadowEffect* shadow = new QGraphicsDropShadowEffect(mainWidget);
         shadow->setBlurRadius(BLUR_RADIUS);
         shadow->setOffset(1, 3);
         shadow->setColor(QColor(0, 0, 0, 80));

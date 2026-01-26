@@ -52,6 +52,8 @@ add_executable(
     config_gen
     ${PROJECT_SOURCE_DIR}/tools/config_gen.cpp
     ${CMAKE_SOURCE_DIR}/includes/encoder.h
+    ${CMAKE_SOURCE_DIR}/includes/HelpDialog.h
+    ${CMAKE_SOURCE_DIR}/srcs/HelpDialog.cpp
 )
 target_link_libraries(
     config_gen PRIVATE

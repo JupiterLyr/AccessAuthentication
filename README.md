@@ -7,7 +7,7 @@ When using, you need to enter the identifier and its correct password to jump ou
 Remember to lock the folder that needs to be protected again after using it!
 
 ## How to use?
-1. create a TXT file and write the configuration you want to register. Details are in the next section.
+1. Create a TXT file and write the configuration you want to register. Details are in the next section.
 2. Run `config_gen.exe` to complete configuration registration, and **delete the TXT file** to avoid information leakage!
 3. Run the main software `AccessAuthentication.exe`. Only by entering the correct identifier and password can you access the specified folder.
 4. **Click "Protect" to lock the folder** after accessing it. Otherwise, your folder will be unprotected.
@@ -15,7 +15,7 @@ Remember to lock the folder that needs to be protected again after using it!
 
 ## How to customize the registration?
 1. Create a new text file. You can use `tools/reg.txt` as a template to fill in the information according to the format requirements.
-2. The content of the TXT file contains an identifier, a password, and a folder path that jumps after verification, which are separated by a symbol `|` with no spaces on both sides, i.e.:</br>Identifier|Password|Folder Path
+2. The content of the TXT file contains an identifier, a password, and a folder path that jumps after verification, which are separated by a symbol `|` with no spaces on both sides, i.e.:</br>Identifier|Password|Folder_Path
     - If the software is used for removable storage media (CD-ROM, USB flash drive, removable hard disk, etc.), please change the drive letter of the "Jump Folder Path" to `Z:` to avoid the drive letter change of this storage media. The software will automatically identify the so-called `Z:` and redirect to the drive letter where the software is located.
     - In the TXT file, the `#` at the beginning of the line is used as a comment.
 3. Run `config_gen.exe` and select the TXT file with your configurations.
@@ -58,6 +58,12 @@ Remember to lock the folder that needs to be protected again after using it!
 
 # Update Logs - 更新日志
 This chapter is written in Chinese for record only.
+
+### Version 1.4.3
+- 加入了帮助按钮，使用 `help.md` 传递使用说明
+- `config_gen.exe` 的等待时长缩短至3-5秒
+#### To Do List
+1. 运行 `config_gen.exe` 时，检测主软件是否在运行；若是，需要提示用户结束主软件
 
 ### Version 1.4.2
 - 修复了标识符重复时引发的 bug；现在写入配置时，若侦测到重复的标识符，则直接取消配置
