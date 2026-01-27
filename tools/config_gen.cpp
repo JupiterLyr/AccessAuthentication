@@ -5,6 +5,7 @@
 #include <QFileDialog>
 #include <QLabel>
 #include <QLayout>
+#include <QLocalSocket>
 #include <QMessageBox>
 #include <QObject>
 #include <QPushButton>
@@ -159,8 +160,41 @@ int generateConfig(const QString& txtPath, const QString& binPath) {
     return tags.size();
 }
 
+bool isMainAppRunning() {
+    QLocalSocket socket;
+    socket.connectToServer("AA_Core_Server");
+    return socket.waitForConnected(200);
+}
+
+void requestMainAppClose() {
+    QLocalSocket socket;
+    socket.connectToServer("AA_Core_Server");
+    if (!socket.waitForConnected(300))
+        return;
+    socket.write("EXIT");
+    socket.flush();
+    socket.waitForBytesWritten(300);
+    socket.disconnectFromServer();
+}
+
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
+    if (isMainAppRunning()) {
+        auto ret = QMessageBox::question(nullptr, "Main App Is Running",
+            "AccessAuthentication.exe is currently running!\n"
+            "Configuration changes will not take effect until it is restarted.\n\n"
+            "Do you want to close AccessAuthentication.exe now?",
+            QMessageBox::Yes | QMessageBox::No
+        );
+        if (ret == QMessageBox::Yes)
+            requestMainAppClose();
+        else {
+            QMessageBox::warning(nullptr, "Warning",
+                "The new configuration will take effect only after restarting AccessAuthentication.exe!\n"
+                "新配置仅会在重启主软件 AccessAuthentication.exe 后会生效！"
+            );
+        }
+    }
     How2Use dlg;
     if (dlg.exec() != QDialog::Accepted)
         return 0;

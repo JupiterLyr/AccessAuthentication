@@ -61,12 +61,15 @@ This chapter is written in Chinese for record only.
 `AccessAuthentication.exe`: main software
 `config_gen.exe`: sub-software called configurations generator (配置生成器)
 
+### Version 1.5.0
+- 运行配置生成器时，若检测到主软件正在运行，则提示用户结束主软件
+- 在主软件和配置生成器之间使用 IPC 实现进程通知
+#### Issue
+- 下个重大更新版本，将引入多线程机制，解决在进行加密或解算过程中导致的主窗口冻结等问题
+
 ### Version 1.4.4
 - 为配置生成器也接入了使用说明
 - 将原先基于 `QMessageBox` 的对话框改为 `QDialog`，以便进行自定义对话框操作
-#### To Do List
-1. 运行配置生成器时，检测主软件是否在运行；若是，需要提示用户结束主软件
-2. 下个重大更新版本，将引入多线程机制，解决在进行加密或解算过程中导致的主窗口冻结等问题
 
 ### Version 1.4.3
 - 主软件中加入了帮助按钮（图标为问号），使用 `help.md` 传递使用说明
