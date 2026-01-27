@@ -58,18 +58,23 @@ Remember to lock the folder that needs to be protected again after using it!
 
 # Update Logs - 更新日志
 This chapter is written in Chinese for record only.
+`AccessAuthentication.exe`: main software
+`config_gen.exe`: sub-software called configurations generator (配置生成器)
+
+### Version 1.4.4
+- 为配置生成器也接入了使用说明
+- 将原先基于 `QMessageBox` 的对话框改为 `QDialog`，以便进行自定义对话框操作
+#### To Do List
+1. 运行配置生成器时，检测主软件是否在运行；若是，需要提示用户结束主软件
+2. 下个重大更新版本，将引入多线程机制，解决在进行加密或解算过程中导致的主窗口冻结等问题
 
 ### Version 1.4.3
-- 加入了帮助按钮，使用 `help.md` 传递使用说明
-- `config_gen.exe` 的等待时长缩短至3-5秒
-#### To Do List
-1. 运行 `config_gen.exe` 时，检测主软件是否在运行；若是，需要提示用户结束主软件
+- 主软件中加入了帮助按钮（图标为问号），使用 `help.md` 传递使用说明
+- 配置生成器的等待时长缩短至3-5秒
 
 ### Version 1.4.2
 - 修复了标识符重复时引发的 bug；现在写入配置时，若侦测到重复的标识符，则直接取消配置
 - 提醒用户标识符的唯一性与密码构成的合法性
-#### Issues
-- 下个重大更新版本，将引入多线程机制，解决在进行加密或解算过程中导致的主窗口冻结等问题
 
 ### Version 1.4.1-beta
 累积更新 v1.4.0、v1.4.1-beta，现已支持解读以 `Z:\` 开头的路径，将重定向至软件运行位置所在盘符。该功能仅在 Windows 系统上测试通过，其余系统尚未测试。</br>
@@ -82,7 +87,7 @@ This update aims to solve the problem that the drive letter of removable storage
 累积更新 v1.3.2、v1.3.3-beta、v1.3.4-beta。部分 bug 尚未解决。
 - 优化了 `config_gen.cpp` 和 `mainwindow.cpp` 中的部分逻辑
 - 开发解析可移动磁盘上的文件的方法，目前正在测试中
-- 在 `config_gen.exe` 运行时弹出的使用说明中，图标已被移除
+- 移除了配置生成器运行弹出窗口中的图标
 - 更新了软件说明文档，加入了更详细的使用说明
 
 ### Version 1.3.1

@@ -54,6 +54,7 @@ add_executable(
     ${CMAKE_SOURCE_DIR}/includes/encoder.h
     ${CMAKE_SOURCE_DIR}/includes/HelpDialog.h
     ${CMAKE_SOURCE_DIR}/srcs/HelpDialog.cpp
+    ${PROJECT_SOURCE_DIR}/resc_config.qrc
 )
 target_link_libraries(
     config_gen PRIVATE

@@ -3,6 +3,8 @@
 #include <QDir>
 #include <QFile>
 #include <QFileDialog>
+#include <QLabel>
+#include <QLayout>
 #include <QMessageBox>
 #include <QObject>
 #include <QPushButton>
@@ -10,6 +12,58 @@
 #include <QTimer>
 #include "encoder.h"
 #include "HelpDialog.h"
+
+class How2Use : public QDialog {
+public:
+    explicit How2Use(QWidget* parent = nullptr);
+
+private:
+    QPushButton* okBtn;
+    QPushButton* helpBtn;
+    QPushButton* cancelBtn;
+};
+
+How2Use::How2Use(QWidget* parent) : QDialog(parent) {
+    setWindowTitle("How to use");
+    setModal(true);
+    setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint);
+    QLabel* text = new QLabel(
+        "If you don\'t know how to use it, please click \"Help\" to read the instructions.\n"
+        "Click \"OK\" to select the TXT file whose configuration you have written, or click \"Close\" to exit.\n"
+        "若不清楚如何使用，请点击 Help 查看使用说明。\n"
+        "点击 OK 选择已配置好的 TXT 文件，点击 Close 退出。"
+    );
+    text->setWordWrap(true);
+    okBtn = new QPushButton("OK");
+    helpBtn = new QPushButton("Help");
+    cancelBtn = new QPushButton("Close");
+    okBtn->setEnabled(false);
+    QHBoxLayout* btnLayout = new QHBoxLayout;
+    btnLayout->addStretch();
+    btnLayout->addWidget(okBtn);
+    btnLayout->addWidget(helpBtn);
+    btnLayout->addWidget(cancelBtn);
+    QVBoxLayout* mainLayout = new QVBoxLayout(this);
+    mainLayout->addWidget(text);
+    mainLayout->addLayout(btnLayout);
+
+    connect(helpBtn, &QPushButton::clicked, this, [this] {
+        static HelpDialog* dlg = nullptr;
+        if (!dlg) {
+            dlg = new HelpDialog(this);
+            dlg->setAttribute(Qt::WA_DeleteOnClose);
+            connect(dlg, &QObject::destroyed, this, [] { dlg = nullptr; });
+            dlg->show();
+        }
+        else {
+            dlg->raise();
+            dlg->activateWindow();
+        }}
+    );
+    connect(okBtn, &QPushButton::clicked, this, &QDialog::accept);
+    connect(cancelBtn, &QPushButton::clicked, this, &QDialog::reject);
+    QTimer::singleShot(3000, this, [this] { okBtn->setEnabled(true); });
+}
 
 /**
  * @brief 生成二进制配置文件
@@ -107,50 +161,8 @@ int generateConfig(const QString& txtPath, const QString& binPath) {
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
-    QMessageBox* msgbox_how2use = new QMessageBox();
-    msgbox_how2use->setWindowTitle("How to use");
-    msgbox_how2use->setText(
-        "1. Select the TXT file with your configurations to be read.\n"
-        "2. The content of the TXT file contains an identifier, a password, and a folder path that jumps after verification, "
-        "which are separated by a symbol \"|\" with no spaces on both sides, i.e.:\n"
-        "\tIdentifier|Password|Folder Path\n"
-        "3. If the software is used for removable storage media (CD-ROM, USB flash drive, removable hard disk, etc.), "
-        "please change the drive letter of the \"Jump Folder Path\" to \"Z:\" to avoid the drive letter change of this storage media. "
-        "The software will automatically identify the so-called \"Z:\" and redirect to the drive letter where the software is located.\n"
-        "4. In the TXT file, the # at the beginning of the line is used as a comment. "
-        "Identifiers cannot contain duplicates. Passwords should be composed of letters, numbers and symbols.\n"
-        "5. After reading, the number of valid configuration information will be displayed. "
-        "The configuration file will be generated automatically, and then the main software can be used normally.\n\n"
-        "1. 选择包含待读取配置的 TXT 文件。\n"
-        "2. TXT 文件的内容包含标识符、密码、验证后跳转的文件夹路径，两两用符号 “|” 分隔，注意两侧不加空格，即：\n"
-        "\t标识符|密码|文件夹路径\n"
-        "3. 若软件用于可移动存储介质（光盘、U盘、移动硬盘等），请将 “跳转文件夹路径” 的盘符改为 “Z:”，避免盘符更改。"
-        "软件会自动识别所谓的Z盘，并重定向至软件所在盘符。\n"
-        "4. TXT 文件中，行首的 # 可用于注释。标识符不能重复，密码应由英文字母、数字、符号构成。\n"
-        "5. 文件读取后会显示有效配置信息的数量，配置文件会自动生成，此后即可正常使用主软件。\n\n"
-        "Read the instructions carefully, then select the file by clicking OK.\n"
-        "请仔细阅读使用须知，然后点击 OK 选择文件。"
-    );
-    msgbox_how2use->setIcon(QMessageBox::NoIcon);
-    msgbox_how2use->setWindowFlags(msgbox_how2use->windowFlags() & ~Qt::WindowCloseButtonHint); // 禁用窗口关闭
-    msgbox_how2use->setStandardButtons(QMessageBox::Ok | QMessageBox::Close);
-    // QAbstractButton* helpBtn = msgbox_how2use->addButton("Help", QMessageBox::InvalidRole);
-    QPushButton* msgOkBtn = qobject_cast<QPushButton*>(msgbox_how2use->button(QMessageBox::Ok));
-    if (msgOkBtn)
-        msgOkBtn->setEnabled(false);
-    QTimer::singleShot(3000, [msgbox_how2use]() {
-        QPushButton* btn = qobject_cast<QPushButton*>(msgbox_how2use->button(QMessageBox::Ok));
-        if (btn)
-            btn->setEnabled(true);
-        });
-    // QObject::connect(helpBtn, &QPushButton::clicked, msgbox_how2use, []() {
-    //     HelpDialog* dlg = new HelpDialog();
-    //     dlg->setAttribute(Qt::WA_DeleteOnClose);
-    //     dlg->show();  // 非模态显示
-    //     });
-    auto ret = msgbox_how2use->exec();
-    msgbox_how2use->deleteLater();
-    if (ret == QMessageBox::Close)
+    How2Use dlg;
+    if (dlg.exec() != QDialog::Accepted)
         return 0;
     QString txtPath = QFileDialog::getOpenFileName(
         nullptr,
@@ -160,12 +172,12 @@ int main(int argc, char* argv[]) {
     );
     if (txtPath.isEmpty()) {
         QMessageBox::information(nullptr, "Cancelled", "No file selected!");
-        return 0;
+        return 1;
     }
     QString binPath = QDir(QCoreApplication::applicationDirPath()).filePath("resources/core.bin");
     int n_tags = generateConfig(txtPath, binPath);
     if (n_tags < 0)
-        return 1;
+        return 2;
     else {
         QMessageBox::information(nullptr, "Success",
             "Data amount: " + QString::number(n_tags) + "\nConfiguration file has been generated."
