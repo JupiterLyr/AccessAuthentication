@@ -17,6 +17,8 @@ signals:
     void finished(bool success, QString message);
 
 private:
+    bool folder2db(const QString& folderPath, const QString& dbPath);
+    bool protectDbFile(const QString& filePath);
     QString folderPath;
     QString dbPath;
 };
@@ -33,6 +35,7 @@ signals:
     void finished(bool success, QString message);
 
 private:
+    bool db2folder(const QString& dbPath, const QString& outputDir);
     QString dbPath;
     QString folderPath;
 };

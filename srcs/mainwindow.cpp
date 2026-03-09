@@ -35,6 +35,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(authenticator, &Authenticator::autSuccess, this, &MainWindow::onAutSuccess);
     connect(authenticator, &Authenticator::autFailed, this, &MainWindow::onAutFailed);
     connect(authenticator, &Authenticator::autPath, this, &MainWindow::onAutPathGet);
+
+    connect(proc, &Processor::protectFinished, this, &MainWindow::onProtectFinished);
+    connect(proc, &Processor::restoreFinished, this, &MainWindow::onRestoreFinished);
 }
 
 MainWindow::~MainWindow() {
@@ -103,7 +106,7 @@ void MainWindow::onCancelBtnClicked() {
 
 void MainWindow::onAutSuccess(const QString& folderPath) {
     QString _folderpath = folderPath;
-    if (folderPath.startsWith('Z')) {
+    if (folderPath.startsWith('Z')) {  // 盘符重定向
         QStorageInfo appDir(QCoreApplication::applicationDirPath());
         QString drive_letter = appDir.rootPath().left(1);
         _folderpath.replace(0, 1, drive_letter);
@@ -115,21 +118,10 @@ void MainWindow::onAutSuccess(const QString& folderPath) {
         );
         return;
     }
-    if (!QDir(_folderpath).exists()) {
-        if (!db2folder(dbPath, _folderpath)) {
-            QMessageBox::critical(this, "Error", "Failed to restore folder!\n还原文件夹失败！");
-            return;
-        }
-        QFile::remove(dbPath);
-    }
-    if (!QDesktopServices::openUrl(QUrl::fromLocalFile(_folderpath)))
-        QMessageBox::critical(this, "Fail to open", "Verification error!\n校验错误！");
+    if (!QDir(_folderpath).exists())
+        proc->restoreFolder(dbPath, _folderpath);
     else
-        QMessageBox::information(this, "Tips",
-            "To ensure the safety of your data, please click \"Protect\" "
-            "in time to protect the folder data after use.\n"
-            "为确保您的数据安全，使用完毕请及时点击 “保护” 来保护文件夹数据。"
-        );
+        QMessageBox::critical(this, "Error", "There is a folder with the same name!\n当前存在同名文件夹！");
 }
 
 void MainWindow::onAutFailed(const QString& reason) {
@@ -155,29 +147,27 @@ void MainWindow::onAutPathGet(const QString& folderPath) {
         QMessageBox::critical(this, "Error", "Folder not found!\n文件夹不存在！");
         return;
     }
-
     proc->protectFolder(_folderpath, dbPath);
-    // TODO: 先改到这里了
+}
 
-    if (!folder2db(_folderpath, dbPath)) {
-        QMessageBox::critical(this, "Error", "Failed to protect folder!\n文件夹保护失败！");
-        return;
-    }
+void MainWindow::onProtectFinished(bool success, QString message) {
+    if (success)
+        QMessageBox::information(this, "Success", message);
     else
-        protectDbFile(dbPath);
-    QDir dir(_folderpath);
-    if (!dir.removeRecursively()) {
-        QMessageBox::warning(this, "Warning",
-            "Failed to delete individual files due to occupation! "
-            "To ensure data security, please delete the original folder manually.\n"
-            "个别文件因占用而删除失败！为确保数据安全，请手动删除原文件夹。\n"
-            "Otherwise, the next time you visit the folder, "
-            "you won't be shown all the files until you manually delete the incomplete folder.\n"
-            "否则，下次访问该文件夹时，将不会为您展示全部文件，直到您手动删除。\n\n"
-            "Folder Path: " + _folderpath
-        );
+        QMessageBox::critical(this, "Error", message);
+}
+
+void MainWindow::onRestoreFinished(bool success, QString message) {
+    if (!success)
+        QMessageBox::critical(this, "Error", message);
+    else {  // 若成功，message 实际上是 folderPath
+        if (!QDesktopServices::openUrl(QUrl::fromLocalFile(message)))
+            QMessageBox::critical(this, "Fail to open", "Verification error!\n校验错误！");
+        else
+            QMessageBox::information(this, "Tips",
+                "To ensure the safety of your data, please click \"Protect\" "
+                "in time to protect the folder data after use.\n"
+                "为确保您的数据安全，使用完毕请及时点击 “保护” 来保护文件夹数据。"
+            );
     }
-    QMessageBox::information(this, "Success",
-        "Folder has been protected successfully.\n文件夹已成功保护。"
-    );
 }

@@ -8,3 +8,5 @@
 # 在运行 config_gen.exe 后，请及时删除下方的配置内容，以免造成泄漏
 # Excuse me for not stating the English explanation. You can translate the contents above.
 # ========== Write your configurations below ==========
+For Test|test123456+|D:\VSCodeCpp\Qt\AccessAuthentication\test\akk
+大文件测试|dawj c4|D:\VSCodeCpp\Qt\AccessAuthentication\test\大文件

@@ -34,5 +34,7 @@ private slots:
     void onAutSuccess(const QString& folderPath);
     void onAutFailed(const QString& reason);
     void onAutPathGet(const QString& folderPath);
+    void onProtectFinished(bool success, QString message);
+    void onRestoreFinished(bool success, QString message);
 };
 #endif // MAINWINDOW_H

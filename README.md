@@ -61,13 +61,16 @@ This chapter is written in Chinese for record only.
 `AccessAuthentication.exe`: main software
 `config_gen.exe`: sub-software called configurations generator (配置生成器)
 
-### Version 1.5.1-alpha
-- 引入了多线程机制和线程池，增设了 `processor` 模块和 `tasks` 模块，用于管理子线程
-- 当前版本尚未通过测试！
+### Version 1.5.3
+累积更新 v1.5.1-alpha、v1.5.2-alpha、v1.5.3-beta、v1.5.3，仍可能存在一些潜在问题，后续有待优化。
+- 引入了多线程机制和线程池，增设了用于管理线程的 `processor` 模块和用于实施子线程任务的 `tasks` 模块
+- 修改并完善了新增模块的逻辑配置
+- 对架构进行了优化，将 `locker` 模块的函数封装进 `tasks` 模块的类中
+- 当前版本未进行全方位测试，请勿轻易使用！
 
 ### Version 1.5.0
 - 运行配置生成器时，若检测到主软件正在运行，则提示用户结束主软件
-- 在主软件和配置生成器之间使用 IPC 实现进程通知
+- 在主软件和配置生成器之间使用 IPC 实现进程通知，已将相关配置写入 `main.cpp`
 
 ### Version 1.4.4
 - 为配置生成器也接入了使用说明
@@ -108,7 +111,7 @@ This update aims to solve the problem that the drive letter of removable storage
 
 ### Version 1.2.0
 包含文件保护-释放机制的首个版本！
-- 开发并部署了 `Protect` 的文件夹打包伪装功能
+- 开发并部署了 `Protect` 功能的文件夹打包伪装功能
 - 完善了打包、解包行为并通过测试
 - 将消息弹窗的内容规范化、合理化，不轻易显示文件夹位置
 
@@ -150,7 +153,7 @@ The security of files and folders needs to be configured by users themselves, wh
 
 ### Version 0.4.5
 累积更新 v0.4.3 ~ v0.4.5
-- 重写并优化了 `SlideButton.h` 和 `SlideButton.cpp`，提供了组件接口，能够丝滑地交互滑动按钮组件
+- 重写并优化了 `SlideButton`，提供了组件接口，能够丝滑地交互滑动按钮组件
 - 利用 QSS 将确认按钮的 UI 进行了优化，并在 `main.cpp` 中调用，将主界面改为圆角，隐藏了系统窗口，使得界面看起来更加现代
 - 设计了图标文件
 
