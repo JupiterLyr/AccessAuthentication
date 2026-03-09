@@ -15,7 +15,7 @@ Language: [English](#how-to-use) | [简体中文](#使用方法)
 5. Click "Cancel" to exit. To move the window, please hold down the upper left corner and drag.
 
 <br></br>
-<h2 id="customize-reg">How to customize the registration</h2>
+<h2 id="customize-reg">How to Customize The Registration</h2>
 
 1. Create a new text file. The content of the TXT file contains an identifier, a password, and a folder path that jumps after verification, which are separated by a symbol `|` with no spaces on both sides, i.e.:
 ```

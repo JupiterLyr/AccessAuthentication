@@ -4,13 +4,14 @@
 #include <QObject>
 #include <QMainWindow>
 #include "authenticator.h"
+#include "processor.h"
 
 namespace Ui {
     class MainWindow;
 }
 
 class MainWindow : public QMainWindow {
-    Q_OBJECT  // 需要用到信号和槽时要加回来
+    Q_OBJECT
 
 public:
     MainWindow(QWidget* parent = nullptr);
@@ -23,6 +24,7 @@ protected:
 private:
     Ui::MainWindow* ui;
     Authenticator* authenticator;
+    Processor* proc;  // 线程管理
 
 private slots:
     void fadeOutUI(int duration = 100);

@@ -15,6 +15,7 @@
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     ui = new Ui::MainWindow();
     ui->setupUi(this);
+    proc = new Processor(this);
 
     this->setWindowFlags(Qt::FramelessWindowHint); // 去掉系统矩形边框，原为 Qt::Window
     this->setAttribute(Qt::WA_TranslucentBackground); // 透明背景
@@ -139,7 +140,7 @@ void MainWindow::onAutPathGet(const QString& folderPath) {
     if (folderPath.isEmpty()) // 传入空字符串
         return;
     QString _folderpath = folderPath;
-    if (folderPath.startsWith('Z')) {
+    if (folderPath.startsWith('Z')) {  // 对所谓 Z: 盘重定向到软件所在盘符（仅windows系统适用）
         QStorageInfo appDir(QCoreApplication::applicationDirPath());
         QString drive_letter = appDir.rootPath().left(1);
         _folderpath.replace(0, 1, drive_letter);
@@ -154,6 +155,10 @@ void MainWindow::onAutPathGet(const QString& folderPath) {
         QMessageBox::critical(this, "Error", "Folder not found!\n文件夹不存在！");
         return;
     }
+
+    proc->protectFolder(_folderpath, dbPath);
+    // TODO: 先改到这里了
+
     if (!folder2db(_folderpath, dbPath)) {
         QMessageBox::critical(this, "Error", "Failed to protect folder!\n文件夹保护失败！");
         return;

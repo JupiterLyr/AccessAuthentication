@@ -29,9 +29,9 @@ How2Use::How2Use(QWidget* parent) : QDialog(parent) {
     setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint);
     QLabel* text = new QLabel(
-        "If you don\'t know how to use it, please click \"Help\" to read the instructions.\n"
+        "If you don\'t know how to use it, please click \"Help\" to view \"How to Customize The Registration\".\n"
         "Click \"OK\" to select the TXT file whose configuration you have written, or click \"Close\" to exit.\n"
-        "若不清楚如何使用，请点击 Help 查看使用说明。\n"
+        "若不清楚如何使用，请点击 Help 查看“定制化注册配置的方法”。\n"
         "点击 OK 选择已配置好的 TXT 文件，点击 Close 退出。"
     );
     text->setWordWrap(true);
