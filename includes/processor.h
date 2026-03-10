@@ -3,9 +3,8 @@
 
 #include <QObject>
 #include <QThread>
-
-#include <QObject>
 #include <QThreadPool>
+#include "tasks.h"
 
 class Processor : public QObject {
     Q_OBJECT
@@ -16,14 +15,18 @@ public:
     void protectFolder(QString folderPath, QString dbPath);
     void restoreFolder(QString dbPath, QString folderPath);
 
+public slots:
+    void cancelTask();
+
 signals:
-    void protectProgress(int current, int total);
-    void restoreProgress(int current, int total);
-    void protectFinished(bool success, QString message);
-    void restoreFinished(bool success, QString message);
+    void protectProgress(quint64 done, quint64 total);
+    void restoreProgress(quint64 done, quint64 total);
+    void protectFinished(int condition, QString message);
+    void restoreFinished(int condition, QString message);
 
 private:
     QThreadPool threadPool;
+    TaskBase* currentTask = nullptr;
 };
 
 #endif

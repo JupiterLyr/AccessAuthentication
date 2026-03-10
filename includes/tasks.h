@@ -6,22 +6,33 @@
 #include <QObject>
 #include <QString>
 
+class TaskBase : public QObject, public QRunnable {
+    Q_OBJECT
+
+public:
+    TaskBase() { setAutoDelete(false); }
+    void requestCancel() { m_cancel.store(true); }
+    bool isCanceled() const { return m_cancel.load(); }
+
+signals:
+    void finished(int condition, QString message);
+
+protected:
+    std::atomic<bool> m_cancel{ false };  // 原子变量跨线程访问，保证线程安全、内存同步
+};
+
 /// @brief 将文件夹保护为 DB 文件
-class ProtectTask : public QObject, public QRunnable {
+class ProtectTask : public TaskBase {
     Q_OBJECT
 
 public:
     ProtectTask(QString folder, QString db);
     void run() override;
-    void requestCancel();
-    bool isCanceled() const;
 
 signals:
-    void finished(bool success, QString message);
-    void progress(int current, int total);
+    void progress(quint64 done, quint64 total);
 
 private:
-    std::atomic<bool> m_cancel{false};  // 原子变量跨线程访问，保证线程安全、内存同步
     QString folderPath;
     QString dbPath;
     int folder2db(const QString& folderPath, const QString& dbPath);
@@ -29,24 +40,22 @@ private:
 };
 
 /// @brief 将 DB 文件恢复成文件夹
-class RestoreTask : public QObject, public QRunnable {
+class RestoreTask : public TaskBase {
     Q_OBJECT
 
 public:
     RestoreTask(QString db, QString folder);
     void run() override;
-    void requestCancel();
-    bool isCanceled() const;
 
 signals:
-    void finished(bool success, QString message);
-    void progress(int current, int total);
+    void progress(quint64 done, quint64 total);
 
 private:
-    std::atomic<bool> m_cancel{false};
+    std::atomic<bool> m_cancel{ false };
     QString dbPath;
     QString folderPath;
     int db2folder(const QString& dbPath, const QString& outputDir);
+    bool normalizeDbFile(const QString& filePath);
 };
 
 #endif

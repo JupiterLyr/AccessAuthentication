@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QMainWindow>
+#include <QProgressDialog>
 #include "authenticator.h"
 #include "processor.h"
 
@@ -25,6 +26,9 @@ private:
     Ui::MainWindow* ui;
     Authenticator* authenticator;
     Processor* proc;  // 线程管理
+    QProgressDialog* pgDialog = nullptr;
+    void btn_enable();
+    void btn_disable();
 
 private slots:
     void fadeOutUI(int duration = 100);
@@ -34,9 +38,8 @@ private slots:
     void onAutSuccess(const QString& folderPath);
     void onAutFailed(const QString& reason);
     void onAutPathGet(const QString& folderPath);
-    void onProtectProgress();
-    void onRestoreProgress();
-    void onProtectFinished(bool success, QString message);
-    void onRestoreFinished(bool success, QString message);
+    void onProgress(quint64 done, quint64 total);
+    void onProtectFinished(int condition, QString message);
+    void onRestoreFinished(int condition, QString message);
 };
 #endif // MAINWINDOW_H

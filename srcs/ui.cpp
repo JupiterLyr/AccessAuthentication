@@ -69,13 +69,13 @@ namespace Ui {
         prot_btn->setCursor(Qt::PointingHandCursor);
         prot_btn->setFixedWidth(100);
         prot_btn->setFocusPolicy(Qt::NoFocus);
-        go_btn = new QPushButton("确　认");
+        go_btn = new QPushButton("解　锁");
         go_btn->setObjectName("goBtn");
         go_btn->setProperty("btnStyle", "primary");
         go_btn->setCursor(Qt::PointingHandCursor);
         go_btn->setFixedWidth(100);
         go_btn->setFocusPolicy(Qt::NoFocus);
-        cancel_btn = new QPushButton("取　消");
+        cancel_btn = new QPushButton("关　闭");
         cancel_btn->setObjectName("cancelBtn");
         cancel_btn->setProperty("btnStyle", "primary");
         cancel_btn->setCursor(Qt::PointingHandCursor);

@@ -35,14 +35,24 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(authenticator, &Authenticator::autFailed, this, &MainWindow::onAutFailed);
     connect(authenticator, &Authenticator::autPath, this, &MainWindow::onAutPathGet);
 
-    connect(proc, &Processor::protectProgress, this, &MainWindow::onProtectProgress);
-    connect(proc, &Processor::restoreProgress, this, &MainWindow::onRestoreProgress);
+    connect(proc, &Processor::protectProgress, this, &MainWindow::onProgress);
+    connect(proc, &Processor::restoreProgress, this, &MainWindow::onProgress);
     connect(proc, &Processor::protectFinished, this, &MainWindow::onProtectFinished);
     connect(proc, &Processor::restoreFinished, this, &MainWindow::onRestoreFinished);
 }
 
 MainWindow::~MainWindow() {
     delete ui;
+}
+
+void MainWindow::btn_enable() {
+    ui->go_btn->setEnabled(true);
+    ui->prot_btn->setEnabled(true);
+}
+
+void MainWindow::btn_disable() {
+    ui->go_btn->setDisabled(true);
+    ui->prot_btn->setDisabled(true);
 }
 
 /// @brief 切换语言时刷新文字
@@ -52,8 +62,8 @@ void MainWindow::refreshTexts() {
         ui->id_label->setText("Identifier");
         ui->pw_label->setText("Password");
         ui->prot_btn->setText("Protect");
-        ui->go_btn->setText("Confirm");
-        ui->cancel_btn->setText("Cancel");
+        ui->go_btn->setText("Unlock");
+        ui->cancel_btn->setText("Close");
         ui->lang_btn->setText("语言：中　　");
     }
     else {
@@ -61,8 +71,8 @@ void MainWindow::refreshTexts() {
         ui->id_label->setText("标 识 符");
         ui->pw_label->setText("密 　 码");
         ui->prot_btn->setText("保　护");
-        ui->go_btn->setText("确　认");
-        ui->cancel_btn->setText("取　消");
+        ui->go_btn->setText("解　锁");
+        ui->cancel_btn->setText("关　闭");
         ui->lang_btn->setText("　　Lang: En.");
     }
 }
@@ -84,12 +94,14 @@ void MainWindow::onProtBtnClicked() {
         QMessageBox::critical(this, "Error", "Identifier cannot be empty!\n标识符不能为空！");
         return;
     }
+    btn_disable();
     emit authenticator->searchPath(id_str);
 }
 
 void MainWindow::onGoBtnClicked() {
     QString id_str = ui->id_input->text();
     QString pw_str = ui->pw_input->text();
+    btn_disable();
     emit authenticator->authenticate(id_str, pw_str);
 }
 
@@ -117,16 +129,28 @@ void MainWindow::onAutSuccess(const QString& folderPath) {
         QMessageBox::warning(this, "Warning",
             "Folder is not protected or the path does not exist!\n文件夹未被保护，或路径不存在！"
         );
+        btn_enable();
         return;
     }
-    if (!QDir(_folderpath).exists())
+    if (!QDir(_folderpath).exists()) {
+        pgDialog = new QProgressDialog("Processing...", "Cancel", 0, 100, this);
+        pgDialog->setWindowTitle("Restoration");
+        pgDialog->setWindowModality(Qt::WindowModal);
+        pgDialog->setMinimumDuration(500);  // 高于500ms才弹出
+        pgDialog->setValue(0);
+        connect(pgDialog, &QProgressDialog::canceled, proc, &Processor::cancelTask);
+        pgDialog->show();
         proc->restoreFolder(dbPath, _folderpath);
-    else
+    }
+    else {
         QMessageBox::critical(this, "Error", "There is a folder with the same name!\n当前存在同名文件夹！");
+        btn_enable();
+    }
 }
 
 void MainWindow::onAutFailed(const QString& reason) {
     QMessageBox::critical(this, "Authenticate Failed", reason);
+    btn_enable();
 }
 
 void MainWindow::onAutPathGet(const QString& folderPath) {
@@ -142,32 +166,46 @@ void MainWindow::onAutPathGet(const QString& folderPath) {
     QString dbPath = folderInfo.absolutePath() + "/" + folderInfo.fileName() + ".db";
     if (QFile::exists(dbPath)) {
         QMessageBox::warning(this, "Warning", "Folder is already protected!\n文件夹已被保护！");
+        btn_enable();
         return;
     }
     if (!folderInfo.exists() || !folderInfo.isDir()) {
         QMessageBox::critical(this, "Error", "Folder not found!\n文件夹不存在！");
+        btn_enable();
         return;
     }
+    pgDialog = new QProgressDialog("Processing...", "Cancel", 0, 100, this);
+    pgDialog->setWindowTitle("Protection");
+    pgDialog->setWindowModality(Qt::WindowModal);
+    pgDialog->setMinimumDuration(500);  // 高于500ms才弹出
+    pgDialog->setValue(0);
+    pgDialog->show();
     proc->protectFolder(_folderpath, dbPath);
 }
 
-void MainWindow::onProtectProgress() {
-
+void MainWindow::onProgress(quint64 done, quint64 total) {
+    if (!pgDialog || total == 0)
+        return;
+    int percent = static_cast<int>((done * 100) / total);
+    pgDialog->setValue(percent);
 }
 
-void MainWindow::onRestoreProgress() {
-
-}
-
-void MainWindow::onProtectFinished(bool success, QString message) {
-    if (success)
+void MainWindow::onProtectFinished(int condition, QString message) {
+    if (condition == 0)
         QMessageBox::information(this, "Success", message);
     else
         QMessageBox::critical(this, "Error", message);
+    if (pgDialog) {
+        pgDialog->setValue(100);
+        pgDialog->close();
+        pgDialog->deleteLater();
+        pgDialog = nullptr;
+    }
+    btn_enable();
 }
 
-void MainWindow::onRestoreFinished(bool success, QString message) {
-    if (!success)
+void MainWindow::onRestoreFinished(int condition, QString message) {
+    if (condition)
         QMessageBox::critical(this, "Error", message);
     else {  // 若成功，message 实际上是 folderPath
         if (!QDesktopServices::openUrl(QUrl::fromLocalFile(message)))
@@ -179,4 +217,11 @@ void MainWindow::onRestoreFinished(bool success, QString message) {
                 "为确保您的数据安全，使用完毕请及时点击 “保护” 来保护文件夹数据。"
             );
     }
+    if (pgDialog) {
+        pgDialog->setValue(100);
+        pgDialog->close();
+        pgDialog->deleteLater();
+        pgDialog = nullptr;
+    }
+    btn_enable();
 }
