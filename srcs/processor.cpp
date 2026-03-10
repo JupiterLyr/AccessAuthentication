@@ -7,12 +7,14 @@ Processor::Processor(QObject* parent) : QObject(parent) {
 
 void Processor::protectFolder(QString folderPath, QString dbPath) {
     ProtectTask* task = new ProtectTask(folderPath, dbPath);
+    connect(task, &ProtectTask::progress, this, &Processor::protectProgress);
     connect(task, &ProtectTask::finished, this, &Processor::protectFinished);
     threadPool.start(task);
 }
 
 void Processor::restoreFolder(QString dbPath, QString folderPath) {
     RestoreTask* task = new RestoreTask(dbPath, folderPath);
+    connect(task, &RestoreTask::progress, this, &Processor::restoreProgress);
     connect(task, &RestoreTask::finished, this, &Processor::restoreFinished);
     threadPool.start(task);
 }

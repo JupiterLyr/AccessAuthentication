@@ -17,6 +17,8 @@ public:
     void restoreFolder(QString dbPath, QString folderPath);
 
 signals:
+    void protectProgress(int current, int total);
+    void restoreProgress(int current, int total);
     void protectFinished(bool success, QString message);
     void restoreFinished(bool success, QString message);
 

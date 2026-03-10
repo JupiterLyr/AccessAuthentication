@@ -61,6 +61,16 @@ This chapter is written in Chinese for record only.
 `AccessAuthentication.exe`: main software
 `config_gen.exe`: sub-software called configurations generator (配置生成器)
 
+### Version 1.6.1-alpha
+当前版本累积了 v1.5.4、v1.6.0 的更新项，由于改动较大，系开发进程中的备份环节，**切勿使用当前版本**！
+- 彻底删除了 `locker.cpp` 和 `locker.h`
+- 重写了 `tasks.cpp` 中的 `folder2db` 与 `db2folder` 的实现逻辑，采用分块读写的形式，减少单次内存消耗量
+- 调整了部分 signal
+#### Issue
+1. 调整部分 UI，如 `Cancel` 按钮文字提示变为 `Close` （关闭）
+2. 后续版本中，在进行打包和加入进度条
+3. 未经严格测试，无法保证新版本的安全性、有效性和稳定性
+
 ### Version 1.5.3
 累积更新 v1.5.1-alpha、v1.5.2-alpha、v1.5.3-beta、v1.5.3，仍可能存在一些潜在问题，后续有待优化。
 - 引入了多线程机制和线程池，增设了用于管理线程的 `processor` 模块和用于实施子线程任务的 `tasks` 模块

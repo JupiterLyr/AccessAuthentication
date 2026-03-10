@@ -9,7 +9,6 @@
 #include <QStorageInfo>
 #include <QTimer>
 #include <QWidget>
-#include "locker.h"
 #include "ui.h"
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
@@ -36,6 +35,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(authenticator, &Authenticator::autFailed, this, &MainWindow::onAutFailed);
     connect(authenticator, &Authenticator::autPath, this, &MainWindow::onAutPathGet);
 
+    connect(proc, &Processor::protectProgress, this, &MainWindow::onProtectProgress);
+    connect(proc, &Processor::restoreProgress, this, &MainWindow::onRestoreProgress);
     connect(proc, &Processor::protectFinished, this, &MainWindow::onProtectFinished);
     connect(proc, &Processor::restoreFinished, this, &MainWindow::onRestoreFinished);
 }
@@ -148,6 +149,14 @@ void MainWindow::onAutPathGet(const QString& folderPath) {
         return;
     }
     proc->protectFolder(_folderpath, dbPath);
+}
+
+void MainWindow::onProtectProgress() {
+
+}
+
+void MainWindow::onRestoreProgress() {
+
 }
 
 void MainWindow::onProtectFinished(bool success, QString message) {
