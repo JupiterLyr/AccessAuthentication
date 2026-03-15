@@ -56,133 +56,22 @@ Remember to lock the folder that needs to be protected again after using it!
 
 ---
 
-# Update Logs - 更新日志
+# Latest Version - 最新版本
 This chapter is written in Chinese for record only.
 `AccessAuthentication.exe`: main software
 `config_gen.exe`: sub-software called configurations generator (配置生成器)
 
-### Version 1.7.0-pre
-重要更新！完善了多线程的管理机制，规范化了各种错误、校验、警告、中断等返回值，加入了进度条，但尚未配置各种返回值的后续操作，当前版本**仅供预览功能**！
-- 调整了部分 UI，将 `Confirm` 和 `Cancel` 改为 `Unlock` 和 `Close`，并在点击 `Protect` 或 `Unlock` 时暂时禁用两按钮，直到相关操作完成
-- 优化了信号-槽机制，加入了百分比进度条，实时显示运行进度，但进度条还有进一步优化空间
+## Version 2.1.0-pre
+**重要更新**！完善了多线程的管理机制，规范化了各种错误、校验、警告、中断等返回值，加入了进度条，但尚未配置各种返回值的后续操作，当前版本**仅供预览功能**！
+### Added
 - 添加了 `TaskBase` 基类，便于获取当前任务以精细化管理
 - 添加了 `normalizeDbFile()` 函数，在未成功删除 DB 文件时，用户可以直接手动删除 DB 文件，以免造成额外残留
-- 利用 `enum` 增设了规范化管理的返回值 `TaskResult`，为后续操作提供便利
-#### Issue
+### Fixed
+- 利用 `enum` 增设了规范化管理的返回值 `TaskResult`，为后续管理返回值提供便利
+- 调整了部分 UI，将 `Confirm` 和 `Cancel` 改为 `Unlock` 和 `Close`，并在点击 `Protect` 或 `Unlock` 时暂时禁用两按钮，直到相关操作完成
+- 优化了信号-槽机制，加入了百分比进度条，实时显示运行进度，但进度条数据显示还有进一步优化空间
+### Issue
 1. 当前版本在 `mainwindow` 中只是简单接收了来自线程的信号，并没有进行后续处理，在后续的版本中将完善体验
 2. 在未来的版本中，可能进一步优化进度条的显示内容和 UI
 3. 未来可能会优化多语言的问题，减少干扰信息
 4. 为提升用户体验，后续版本可能会针对配置生成器进行升级，可能变成基于 UI 的管理工具。考虑工程量较大，此工期可能较长，敬请期待！
-
-### Version 1.6.1-alpha
-当前版本累积了 v1.5.4、v1.6.0 的更新项，由于改动较大，系开发进程中的备份环节，未经严格测试，无法保证新版本的安全性、有效性和稳定性，**切勿使用当前版本**！
-- 彻底删除了 `locker.cpp` 和 `locker.h`
-- 重写了 `tasks.cpp` 中的 `folder2db` 与 `db2folder` 的实现逻辑，采用分块读写的形式，减少单次内存消耗量
-- 调整了部分 signal
-
-### Version 1.5.3
-累积更新 v1.5.1-alpha、v1.5.2-alpha、v1.5.3-beta、v1.5.3，仍可能存在一些潜在问题，后续有待优化。
-- 引入了多线程机制和线程池，增设了用于管理线程的 `processor` 模块和用于实施子线程任务的 `tasks` 模块
-- 修改并完善了新增模块的逻辑配置
-- 对架构进行了优化，将 `locker` 模块的函数封装进 `tasks` 模块的类中
-- 当前版本未进行全方位测试，请勿轻易使用！
-
-### Version 1.5.0
-- 运行配置生成器时，若检测到主软件正在运行，则提示用户结束主软件
-- 在主软件和配置生成器之间使用 IPC 实现进程通知，已将相关配置写入 `main.cpp`
-
-### Version 1.4.4
-- 为配置生成器也接入了使用说明
-- 将原先基于 `QMessageBox` 的对话框改为 `QDialog`，以便进行自定义对话框操作
-
-### Version 1.4.3
-- 主软件中加入了帮助按钮（图标为问号），使用 `help.md` 传递使用说明
-- 配置生成器的等待时长缩短至3-5秒
-
-### Version 1.4.2
-- 修复了标识符重复时引发的 bug；现在写入配置时，若侦测到重复的标识符，则直接取消配置
-- 提醒用户标识符的唯一性与密码构成的合法性
-
-### Version 1.4.1-beta
-累积更新 v1.4.0、v1.4.1-beta，现已支持解读以 `Z:\` 开头的路径，将重定向至软件运行位置所在盘符。该功能仅在 Windows 系统上测试通过，其余系统尚未测试。</br>
-此次更新旨在解决可移动存储媒介在 Windows 系统中盘符可变的问题。实际上，当用户在配置跳转路径时，若使用 `Z:\` 作为盘符，则表示待跳转的文件夹与该软件运行路径所在盘符相同。当用户把软件放在可移动存储媒介上时，相当于利用了这一特性。</br>
-This update aims to solve the problem that the drive letter of removable storage media can be changed in Windows system. In fact, when the user configures the jump path, if `Z:\` is used as the drive letter, it means that the folder to jump is the same as the drive letter where the software runs. When users put the software on removable storage media, it is equivalent to taking advantage of this feature.
-- 生成 DB 文件后，若在 Windows 系统下运行，则将文件设置为隐藏属性和受系统保护属性，一般情况下其 DB 文件将不可见
-- 修复了部分 bug：当文件夹不存在时，现在不会错误地创建 DB 文件了；可移动存储媒介的校验问题已解决
-
-### Version 1.3.4-beta
-累积更新 v1.3.2、v1.3.3-beta、v1.3.4-beta。部分 bug 尚未解决。
-- 优化了 `config_gen.cpp` 和 `mainwindow.cpp` 中的部分逻辑
-- 开发解析可移动磁盘上的文件的方法，目前正在测试中
-- 移除了配置生成器运行弹出窗口中的图标
-- 更新了软件说明文档，加入了更详细的使用说明
-
-### Version 1.3.1
-- 将 `config_gen.cpp` 的手动输入路径改为弹出文件对话框选择文件，并优化了传递逻辑
-- 加入了使用方法来引导用户，并预先加入了可移动存储媒介的盘符处理的解决策略说明
-
-### Version 1.3.0
-累积更新 v1.2.1、v1.2.2、v1.3.0，**对文件夹而言的3S版本**：Safe + Stable + Simple！
-- 对原本的配置信息加入了混淆机制，防止配置文件内容泄漏
-- 用 `encoder.txt` 记录了编码算法框架
-- 原先的工具要求用户使用 CSV 文件作为辅助文件，用以写入配置；为了更加用户友好，现改为了 TXT 文件
-- 加入防误触机制，用户点击 `Cancel` 按钮后，需二次确认是否关闭
-
-### Version 1.2.0
-包含文件保护-释放机制的首个版本！
-- 开发并部署了 `Protect` 功能的文件夹打包伪装功能
-- 完善了打包、解包行为并通过测试
-- 将消息弹窗的内容规范化、合理化，不轻易显示文件夹位置
-
-### Vesion 1.1.3
-累积更新 v1.1.1 ~ v1.1.3，当前版本**测试未通过**，仅用于备份。
-- 开发了文件夹打包伪装功能，目前尚未部署
-- 在 UI 中增设了 `Protect` 按钮，用于被解包的文件夹重新打包伪装，目前拟采用仅验证标识符的方式
-- 修改了验证通过后的实现逻辑
-
-### Version 1.1.0
-首个可用验证模块的版本！</br>
-当前版本中，文件夹的安全性需要由用户自行配置，使用难度大，后续版本提出全新方法解决了此问题。</br>
-The security of files and folders needs to be configured by users themselves, which is difficult to use. This problem will be solved later.
-- 提高了 `encoder.h` 的加密算法复杂度
-- 配置了验证机制，可以在本地正常使用
-
-### Version 1.0.0-beta
-测试版，旨在测试该软件各模块能否正常运作。
-- 开发了信息验证模块，其中加密验证代码被保护在了未上传的 `encoder.h` 中，目前该方法正处于调试阶段
-- 开放了 `config_gen.cpp` 的版本控制机制，其中核心加密算法移动到了 `encoder.h` 中
-
-### Version 0.7.2
-累积更新 v0.6.4、v0.7.0 ~ 0.7.2，其中 v0.6.4 优化了背景阴影效果，v0.7.x 则致力于开发新功能。考虑到数据安全性问题，配置生成器的算法暂不开源。The algorithm of "Configuration Generator" is not open source considering that data security needs to be protected.
-- GUI 界面部分完工，仅剩 `Confirm` 的功能链接未配置
-- 加入了首个用于生成 BIN 文件的**配置生成器**工具，其源文件放置于 `tools` 文件夹下
-
-### Version 0.6.3
-累积更新 v0.6.0 ~ v0.6.3。该版本交付了较完善的 UI 设计，`Confirm` 的操作暂且用 `QMessageBox` 拦截。
-- 优化了 UI 层，将 `centralWidget` 作为总底板，`centralLayout` 用于界面居中，所有组件挪至其内的 `mainWidget` 中
-- 将 `mainWidget` 作为交互窗口，并在窗口后方添加了阴影
-- 将 `Confirm` 的快捷键设定为 `Enter`
-- 优化了 QSS 组件效果设置
-- 配置并修复了软件图标无法正常显示的 bug
-
-### Version 0.5.1
-累积更新 v0.5.0、v0.5.1
-- 将界面全部组件的 UI 变得更现代，并调整了界面配色
-- 添加了 `Cancel` 按钮，用于关闭界面
-
-### Version 0.4.5
-累积更新 v0.4.3 ~ v0.4.5
-- 重写并优化了 `SlideButton`，提供了组件接口，能够丝滑地交互滑动按钮组件
-- 利用 QSS 将确认按钮的 UI 进行了优化，并在 `main.cpp` 中调用，将主界面改为圆角，隐藏了系统窗口，使得界面看起来更加现代
-- 设计了图标文件
-
-### Version 0.4.2
-累积更新 v0.4.0 ~ v0.4.2，当前版本尚未加入主要功能，且无法正确播放动画！
-- 加入了 `SlideButton` 自定义组件，编写了配套的 H 文件和 CPP 文件
-- 微调了 `CMakeLists.txt` 中的项目架构设置
-- 完成了 UI 初步设计，但仍需调整
-- 用直接修改文字的方式加入了中英文切换功能
-
-### Version 0.3.0 - After Initial Commit
-开启了 `develop` 分支和 `main` 分支，后者仅用于重大更新的同步。
-- 基本框架已完成
