@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(proc, &Processor::restoreProgress, this, &MainWindow::onProgress);
     connect(proc, &Processor::protectFinished, this, &MainWindow::onProtectFinished);
     connect(proc, &Processor::restoreFinished, this, &MainWindow::onRestoreFinished);
+    connect(proc, &Processor::reportReceived, this, &MainWindow::showReport);
 }
 
 MainWindow::~MainWindow() {
@@ -48,11 +49,13 @@ MainWindow::~MainWindow() {
 void MainWindow::btn_enable() {
     ui->go_btn->setEnabled(true);
     ui->prot_btn->setEnabled(true);
+    ui->cancel_btn->setEnabled(true);
 }
 
 void MainWindow::btn_disable() {
     ui->go_btn->setDisabled(true);
     ui->prot_btn->setDisabled(true);
+    ui->cancel_btn->setDisabled(true);
 }
 
 /// @brief 切换语言时刷新文字
@@ -179,6 +182,7 @@ void MainWindow::onAutPathGet(const QString& folderPath) {
     pgDialog->setWindowModality(Qt::WindowModal);
     pgDialog->setMinimumDuration(500);  // 高于500ms才弹出
     pgDialog->setValue(0);
+    connect(pgDialog, &QProgressDialog::canceled, proc, &Processor::cancelTask);
     pgDialog->show();
     proc->protectFolder(_folderpath, dbPath);
 }
@@ -191,8 +195,10 @@ void MainWindow::onProgress(quint64 done, quint64 total) {
 }
 
 void MainWindow::onProtectFinished(int condition, QString message) {
-    if (condition == 0)
+    if (condition < 10)
         QMessageBox::information(this, "Success", message);
+    else if (condition >= 70)
+        QMessageBox::warning(this, "Warning", message);
     else
         QMessageBox::critical(this, "Error", message);
     if (pgDialog) {
@@ -205,9 +211,7 @@ void MainWindow::onProtectFinished(int condition, QString message) {
 }
 
 void MainWindow::onRestoreFinished(int condition, QString message) {
-    if (condition)
-        QMessageBox::critical(this, "Error", message);
-    else {  // 若成功，message 实际上是 folderPath
+    if (condition == 0) {  // 若成功，message 实际上是 folderPath
         if (!QDesktopServices::openUrl(QUrl::fromLocalFile(message)))
             QMessageBox::critical(this, "Fail to open", "Verification error!\n校验错误！");
         else
@@ -217,6 +221,12 @@ void MainWindow::onRestoreFinished(int condition, QString message) {
                 "为确保您的数据安全，使用完毕请及时点击 “保护” 来保护文件夹数据。"
             );
     }
+    else if (condition < 10)
+        QMessageBox::information(this, "Success", message);
+    else if (condition >= 70)
+        QMessageBox::warning(this, "Warning", message);
+    else
+        QMessageBox::critical(this, "Error", message);
     if (pgDialog) {
         pgDialog->setValue(100);
         pgDialog->close();
@@ -224,4 +234,22 @@ void MainWindow::onRestoreFinished(int condition, QString message) {
         pgDialog = nullptr;
     }
     btn_enable();
+}
+
+/// @param type 0: info | 1: warning | 2: error
+void MainWindow::showReport(int type, QString message) {
+    switch (type) {
+    case 0:
+        QMessageBox::information(this, "Report", message);
+        break;
+    case 1:
+        QMessageBox::warning(this, "Warning", message);
+        break;
+    case 2:
+        QMessageBox::critical(this, "Error", message);
+        break;
+    default:
+        QMessageBox::critical(this, "Unknown Error",
+            QString("Unknown Error:\nCode: %1\n%2").arg(type).arg(message));
+    }
 }

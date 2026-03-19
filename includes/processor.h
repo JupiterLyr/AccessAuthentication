@@ -1,6 +1,7 @@
 #ifndef PROCESSOR_H
 #define PROCESSOR_H
 
+#include <QMutex>
 #include <QObject>
 #include <QThread>
 #include <QThreadPool>
@@ -23,10 +24,12 @@ signals:
     void restoreProgress(quint64 done, quint64 total);
     void protectFinished(int condition, QString message);
     void restoreFinished(int condition, QString message);
+    void reportReceived(int type, QString message);
 
 private:
     QThreadPool threadPool;
     TaskBase* currentTask = nullptr;
+    mutable QMutex mutex;
 };
 
 #endif

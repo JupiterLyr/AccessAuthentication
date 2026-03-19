@@ -41,5 +41,6 @@ private slots:
     void onProgress(quint64 done, quint64 total);
     void onProtectFinished(int condition, QString message);
     void onRestoreFinished(int condition, QString message);
+    void showReport(int type, QString message);
 };
 #endif // MAINWINDOW_H

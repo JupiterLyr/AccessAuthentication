@@ -2,8 +2,10 @@
 #include <QDataStream>
 #include <QDir>
 #include <QDirIterator>
-#include <QFile>
+#include <QEventLoop>
+#include <QTimer>
 #include <QMessageBox>
+#include "error_code.h"
 #ifdef Q_OS_WIN
 #include <windows.h>
 #endif
@@ -13,25 +15,30 @@ static const qint64 IO_CHUNK_SIZE = 8 * 1024 * 1024;
 static const char MAGIC[4] = { 'F', 'D', 'B', 'P' };  // FDBP: folder-database package
 static const quint16 VERSION = 2;
 
-enum TaskResult {
-    TASK_OK = 0,
-    TASK_CANCEL = 1,
+void TaskBase::afterCancel(QFile& out) {
+    if (out.exists()) {
+        out.close();
+        out.remove();
+    }
+}
 
-    // ===== ERROR =====
-    TASK_FILE_OPEN_ERROR = 11,      // cannot open the file
-    TASK_FILE_READ_FAILED = 12,     // some files cannot be read
-    TASK_FILE_DELETE_FAILED = 13,   // some files cannot be deleted
-    TASK_FOLDER_CREATE_FAILED = 14, // cannot create the folder
+void TaskBase::afterCancel(QFile& in, QFile& out) {
+    if (in.exists()) {
+        in.close();
+    }
+    afterCancel(out);
+}
 
-    TASK_DATA_ILLEGAL = 21,         // data in the file is illegal
-
-    TASK_VERIFY_MAGIC = 51,         // magic text verification error
-    TASK_VERIFY_VERSION = 52,       // inconsistent versions
-    TASK_VERIFY_PATH_LEN = 53,      // path length mismatching in database
-
-    // ===== WARNING =====
-    TASK_WARN_DB_REMAIN = 71        // database file is not deleted properly
-};
+bool TaskBase::afterCancel(QFile& in, QFile& out, const QString& outPath) {
+    afterCancel(in, out);
+    emit report(0, "Deleting the redundant files. Please wait patiently...\n正在删除冗余文件，请耐心等待...");
+    // 等待 500ms（不阻塞事件分发）
+    QEventLoop loop;
+    QTimer::singleShot(500, &loop, &QEventLoop::quit);
+    loop.exec();
+    QDir dir(outPath);
+    return dir.removeRecursively();
+}
 
 // ==================== Protect Task ====================
 
@@ -40,27 +47,11 @@ ProtectTask::ProtectTask(QString folder, QString db)
 }
 
 void ProtectTask::run() {
-    if (isCanceled()) {
-        emit finished(1, QStringLiteral("Operation Canceled!"));
-        return;
-    }
     int ret = folder2db(folderPath, dbPath);
-    if (ret) {  // TODO: 细化错误分支
-        emit finished(ret, "Failed to protect folder!\n保护文件夹失败！");
-        return;
-    }
-    // ok == 13:
-    // QMessageBox::warning(nullptr, "Warning",
-    //         "Failed to delete individual files due to occupation! "
-    //         "To ensure data security, please delete the original folder manually.\n"
-    //         "个别文件因占用而删除失败！为确保数据安全，请手动删除原文件夹。\n"
-    //         "Otherwise, the next time you visit the folder, "
-    //         "you won't be shown all the files until you manually delete the incomplete folder.\n"
-    //         "否则，下次访问该文件夹时，将不会为您展示全部文件，直到您手动删除。\n\n"
-    //         "Folder Path: " + folderPath
-    //     );
-    protectDbFile(dbPath);
-    emit finished(0, "Folder has been protected successfully.\n文件夹已成功保护。");
+    if (ret == TASK_OK)
+        emit finished(ret, "Folder has been protected successfully.\n文件夹已成功保护。");  // 日后可能删除
+    else
+        emit finished(ret, codemsg(ret));
 }
 
 // ==================== Restore Task ====================
@@ -70,16 +61,11 @@ RestoreTask::RestoreTask(QString db, QString folder)
 }
 
 void RestoreTask::run() {
-    if (isCanceled()) {
-        emit finished(1, QStringLiteral("Operation Canceled!"));
-        return;
-    }
     int ret = db2folder(dbPath, folderPath);
-    if (ret) {  // TODO: 细化错误分支
-        emit finished(ret, "Failed to restore folder!\n还原文件夹失败！");
-        return;
-    }
-    emit finished(0, folderPath);
+    if (ret == TASK_OK)
+        emit finished(0, folderPath);  // 返回文件夹路径以便自动打开
+    else
+        emit finished(ret, codemsg(ret));
 }
 
 // ==================== Realization ====================
@@ -95,8 +81,7 @@ int ProtectTask::folder2db(const QString& folderPath, const QString& dbPath) {
     }
     QFile outFile(dbPath);
     if (!outFile.open(QIODevice::WriteOnly)) {
-        outFile.close();
-        outFile.remove();
+        afterCancel(outFile);
         return TASK_FILE_OPEN_ERROR;
     }
     QDataStream out(&outFile);
@@ -115,15 +100,14 @@ int ProtectTask::folder2db(const QString& folderPath, const QString& dbPath) {
     buffer.resize(IO_CHUNK_SIZE);
     QDirIterator w_it(folderPath, QDir::Files, QDirIterator::Subdirectories);
     while (w_it.hasNext()) {
-        if (isCanceled()) {
-            outFile.close();
-            outFile.remove();  // 取消后，删除不完整的 db 文件以避免残留
-            return TASK_CANCEL;
-        }
         QString filePath = w_it.next();
         QFile inFile(filePath);
         if (!inFile.open(QIODevice::ReadOnly))  // 存在无法打开的文件
             return TASK_FILE_READ_FAILED;
+        if (isCanceled()) {
+            afterCancel(inFile, outFile);
+            return TASK_CANCEL;
+        }
         QByteArray pathBytes = (baseDir.relativeFilePath(filePath)).toUtf8();
         out << quint16(pathBytes.size());
         out.writeRawData(pathBytes.constData(), pathBytes.size());
@@ -133,9 +117,7 @@ int ProtectTask::folder2db(const QString& folderPath, const QString& dbPath) {
         // 分块读取并写入到 out
         while (!inFile.atEnd()) {
             if (isCanceled()) {
-                inFile.close();
-                outFile.close();
-                outFile.remove();
+                afterCancel(inFile, outFile);
                 return TASK_CANCEL;
             }
             qint64 n = inFile.read(buffer.data(), IO_CHUNK_SIZE);
@@ -150,6 +132,7 @@ int ProtectTask::folder2db(const QString& folderPath, const QString& dbPath) {
     }
     emit progress(processedBytes, totalBytes);
     outFile.close();
+    protectDbFile(dbPath);
     QDir dir(folderPath);
     if (!dir.removeRecursively())  // 删除原文件夹
         return TASK_FILE_DELETE_FAILED;
@@ -193,10 +176,6 @@ int RestoreTask::db2folder(const QString& dbPath, const QString& outputDir) {
     QByteArray buffer;
     buffer.resize(IO_CHUNK_SIZE);
     while (!in.atEnd()) {
-        if (isCanceled()) {
-            inFile.close();  // 取消则仅退出，不删掉文件
-            return TASK_CANCEL;
-        }
         quint16 pathLen;
         in >> pathLen;
         QByteArray pathBytes(pathLen, 0);
@@ -207,7 +186,6 @@ int RestoreTask::db2folder(const QString& dbPath, const QString& outputDir) {
         QString relativePath = QString::fromUtf8(pathBytes);
         quint64 dataLen;
         in >> dataLen;
-        // QString outPath = outputDir + "/" + relativePath;
         QString outPath = QDir(outputDir).filePath(relativePath);
         if (!QDir().mkpath(QFileInfo(outPath).absolutePath())) {  // 文件夹路径创建失败
             inFile.close();
@@ -216,23 +194,23 @@ int RestoreTask::db2folder(const QString& dbPath, const QString& outputDir) {
         QFile outFile(outPath);
         if (!outFile.open(QIODevice::WriteOnly)) {  // 无法定位到输出位置
             inFile.close();
-            return TASK_FILE_OPEN_ERROR;
+            return TASK_FILE_WRITE_FAILED;
+        }
+        if (isCanceled()) {
+            return afterCancel(inFile, outFile, outputDir) ? TASK_CANCEL : TASK_WARN_EXTRACT_REMAIN;
         }
         quint64 remain = dataLen;
 
         // ===== 分块读取 dataLen 字节并写入 =====
         while (remain > 0) {
             if (isCanceled()) {
-                outFile.close();
-                inFile.close();
-                return TASK_CANCEL;
+                return afterCancel(inFile, outFile, outputDir) ? TASK_CANCEL : TASK_WARN_EXTRACT_REMAIN;
             }
             qint64 toRead = std::min<quint64>(remain, IO_CHUNK_SIZE);
             qint64 got = in.readRawData(buffer.data(), static_cast<int>(toRead));
             if (got <= 0) {
-                outFile.close();
-                QFile::remove(outPath);
-                inFile.close();
+                afterCancel(inFile, outFile);
+                QFile::remove(outputDir);
                 return TASK_DATA_ILLEGAL;
             }
             outFile.write(buffer.constData(), got);

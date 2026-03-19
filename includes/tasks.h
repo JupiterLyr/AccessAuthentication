@@ -2,6 +2,7 @@
 #define TASKS_H
 
 #include <atomic>
+#include <QFile>
 #include <QRunnable>
 #include <QObject>
 #include <QString>
@@ -16,8 +17,12 @@ public:
 
 signals:
     void finished(int condition, QString message);
+    void report(int type, QString message);
 
 protected:
+    void afterCancel(QFile& out);
+    void afterCancel(QFile& in, QFile& out);
+    bool afterCancel(QFile& in, QFile& out, const QString& outPath);
     std::atomic<bool> m_cancel{ false };  // 原子变量跨线程访问，保证线程安全、内存同步
 };
 
@@ -51,7 +56,6 @@ signals:
     void progress(quint64 done, quint64 total);
 
 private:
-    std::atomic<bool> m_cancel{ false };
     QString dbPath;
     QString folderPath;
     int db2folder(const QString& dbPath, const QString& outputDir);

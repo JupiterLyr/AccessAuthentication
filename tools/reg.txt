@@ -10,3 +10,4 @@
 # ========== Write your configurations below ==========
 超大|chaoda!|D:\VSCodeCpp\Qt\AccessAuthentication\test\超大文件
 中|zhong!|D:\VSCodeCpp\Qt\AccessAuthentication\test\中文件
+chaoda|chaoda!|D:\VSCodeCpp\Qt\AccessAuthentication\test\extra large

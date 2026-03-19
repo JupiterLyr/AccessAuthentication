@@ -1,77 +1,145 @@
-# Access Authentication
-## What is this?
-The software is designed to protect the access rights of folders that need to be kept secret.
-Every time you compile, it will read the identifier and password you set as well as the corresponding accessible address.</br>
-Among them, the password will be stored in some encrypted method.
-When using, you need to enter the identifier and its correct password to jump out of the corresponding folder window.</br>
-Remember to lock the folder that needs to be protected again after using it!
+# Local AuthVault
+[中文](#本地数据保险柜)  |  [Latest Version](#latest-version)
+## I. What is this?
+This software is designed to protect access permissions for specified folders. You only need to enter the **identifier** and **password** to access your preconfigured folder.</br>
+The identifier, password, and the folder path associated with its identifier must be registered using a *Configuration Generator* tool. All configuration data is stored in encrypted form to enhance security.</br>
+After use, remember to lock the protected folder again!
 
-## How to use?
-1. Create a TXT file and write the configuration you want to register. Details are in the next section.
-2. Run `config_gen.exe` to complete configuration registration, and **delete the TXT file** to avoid information leakage!
-3. Run the main software `AccessAuthentication.exe`. Only by entering the correct identifier and password can you access the specified folder.
-4. **Click "Protect" to lock the folder** after accessing it. Otherwise, your folder will be unprotected.
-5. Click "Cancel" to exit. To move the window, please hold down the upper left corner and drag.
+## II. How to use?
+It is recommended to follow the steps below:
 
-## How to customize the registration?
-1. Create a new text file. You can use `tools/reg.txt` as a template to fill in the information according to the format requirements.
-2. The content of the TXT file contains an identifier, a password, and a folder path that jumps after verification, which are separated by a symbol `|` with no spaces on both sides, i.e.:</br>Identifier|Password|Folder_Path
-    - If the software is used for removable storage media (CD-ROM, USB flash drive, removable hard disk, etc.), please change the drive letter of the "Jump Folder Path" to `Z:` to avoid the drive letter change of this storage media. The software will automatically identify the so-called `Z:` and redirect to the drive letter where the software is located.
-    - In the TXT file, the `#` at the beginning of the line is used as a comment.
-3. Run `config_gen.exe` and select the TXT file with your configurations.
-4. After reading, the number of valid configuration information will be displayed. The configuration file will be generated automatically, and then the main software can be used normally. This software can be installed in multiple locations on your computer, and each Access Authentication Software has its own configuration file.
-5. Remember to **delete the TXT file after using it**, so as not to reveal the configuration that you should keep secret.
+### 1. Prepare the Configuration File
+- Create a new text file (\*.TXT), you may use `tools/reg.txt` as a template.
+- Fill in the content using the following format:
+```txt
+Identifier|Password|Folder_Path
+```
+E.g.:
+```txt
+myfile|abc123|D:\SecretFolder
+```
+- Format Note:
+  - Use `|` as a separator. **Do NOT add spaces around it**.
+  - Multiple configurations are supported (one per line), but **identifiers must be unique**.
+  - Lines starting with `#` are treated as comments.
+  - If used on a USB drive or external storage device, change the drive letter in the path to `Z:`. The software will automatically map `Z:` to the actual drive where the program is running.
 
-## Warning
-- Every time you read a new TXT file with `config_gen.exe`, the original configuration will be overwritten into a brand new configuration!
-- **Don't use it directly for files**! Because its extension will be left behind. Files before protection cannot be cleaned automatically either. It was designed to protect folders (and files in them) rather than files themselves.
-- The files on the removable disk **have NOT been tested** yet!
+### 2. Generate The Configuration
+- Run `config_gen.exe`.
+- Select the TXT file you just created.
+- The program will generate the configuration file and display the number of valid entries. If an error occurs, please revise the TXT file according to the prompt.
 
-# 访问认证软件
-## 说明
-软件旨在为保密文件夹的访问权限提供保护措施。每次编译都会针对性地读取您设定的标识符和密码，以及对应的可访问地址。</br>
-其中，密码以某种加密方式储存。使用时，需要输入标识符及其正确密码，才能跳转出对应的文件夹窗口。</br>
-使用完毕后，记得重新给需要保护的文件夹上锁！
+**Note**:
+- After configuration, **delete the TXT file immediately** to prevent plaintext password leakage!
+- Each time you regenerate the configuration, all existing configurations will be overwritten! This behavior may be improved in a future version.
 
-## 使用方法
-1. 首先创建一个 TXT 文件，写入想注册的配置，具体步骤在下一节。
-2. 运行 `config_gen.exe` 完成配置注册，并**删除 TXT 文件**，以免泄漏信息！
-3. 运行主软件 `AccessAuthentication.exe`，只有输入正确的标识符和密码，点击 “确定” 才能访问指定的文件夹。
-4. 文件夹访问完毕后，再**点击 “保护” 为文件夹上锁**，否则你的文件夹将处于未保护状态。
-5. 退出软件请点击 “取消”，挪动窗口请按住左上角拖动。
+### 3. Protect the Folder
+- Run the main program `AccessAuthentication.exe`.
+- Enter the correct identifier, then click "Protect" to lock the folder associated with the identifier and set the encrypted file as system-protected.
 
-## 定制化注册配置的方法
-1. 新建一个文本文档（TXT文件），可以使用 `tools/reg.txt` 作为模板，根据格式要求填写信息。
-2. TXT 文件的内容包含标识符、密码、验证后跳转的文件夹路径，两两用符号 `|` 分隔，注意符号两侧不加空格，即：</br>标识符|密码|文件夹路径
-    - 若软件用于可移动存储介质（光盘、U盘、移动硬盘等），请将“跳转文件夹路径”的盘符改为 `Z:`，避免盘符更改导致不可用。软件会自动识别所谓的Z盘，并重定向至软件所在盘符。
-    - 在 TXT 文件中，行首的 `#` 可用于注释。
-3. 运行 `config_gen.exe`，选择包含配置的 TXT 文件。
-4. 文件读取后，会显示有效配置信息的数量，配置文件会自动生成，此后即可正常使用主软件。你可以在计算机的多个位置安装本软件，每一个访问认证软件都独享自己的配置文件。
-5. 完成后**请删除 TXT 文件**，以免泄露本应保密的配置。
+### 4. Access the Protected Folder
+- Run the main program `AccessAuthentication.exe`.
+- Enter the correct identifier and password, then click "Unlock". Upon successful verification, the corresponding folder will be opened automatically.
+- After use, please click "Protect" again to relock the folder, otherwise it will remain unprotected.
 
-## 注意
-- 每用 `config_gen.exe` 读取一个新的 TXT 文件，原有的配置都会被覆盖成全新配置！
-- **不推荐直接用于文件**！因为其扩展名会被保留，保护前的文件也无法自动清理。软件设计的初衷是保护文件夹（及其中的文件）而非文件本身。
-- 目前，尚未对可移动磁盘上的文件进行测试！
+## III. Tips
+- Click "Close" to exit the software.
+- You can drag the window by holding the icon at the top-left corner.
+- If needed, click the `?` in the bottom-right corner to open the help manual.
+- Before the configuration generator is upgraded, it is recommended to manually record all identifiers. If you forget an identifier, you will need to contact the developer for further assistance.
+
+## IV. Common Misuse Cases
+- Forgetting to delete the TXT file → leads to password leakage
+- Not clicking "Protect" after use → folder becomes exposed (unless you intentionally want it unprotected)
+- Configuration overwritten → previous access becomes invalid
+- Incorrect path / drive letter change → unable to open folder
+- Using `Z:` in configurations on removable storage, but running the software outside the device → no redirection to the intended storage device
+
+## V. Notice
+1. In the future, you can install the software via an installer on a local disk. If you need to use it on removable storage, simply copy the installation directory to a USB drive or external disk—no reinstallation is required.
+2. **Not recommended for direct use on individual files**! File extensions will remain unchanged, and original files cannot be automatically cleaned before protection. This software is designed to protect folders (and their contents), not individual files. To protect a file, place it inside a folder instead.
+3. When using the software on removable storage and configuring paths with `Z:`, you **must run the software from that storage device**, because `Z:` is essentially redirected to the drive where the main program is executed.
 
 ---
 
-# Latest Version - 最新版本
-This chapter is written in Chinese for record only.
+# 本地数据保险柜
+[English](#local-authvault) | [最新版本](#latest-version)
+## 一、软件简介
+本软件用于保护指定文件夹的访问权限，您只需输入**标识符**和**密码**即可访问您预设好的文件夹。</br>
+配置标识符、密码和您想通过此标识符打开的文件夹，需要用子软件注册配置。配置信息会被加密存储，提高安全性。</br>
+使用完毕后，记得重新给需要保护的文件夹上锁！
+
+## 二、使用方法
+建议按照如下顺序操作：
+
+### 1. 准备配置文件
+- 新建一个文本文档（TXT），可以使用 `tools/reg.txt` 作为模板
+- 按照下列格式填写内容：
+```txt
+标识符|密码|文件夹路径
+```
+例如：
+```txt
+myfile|abc123|D:\SecretFolder
+```
+- 格式说明：
+  - 使用 `|` 分隔，**不要在该符号两侧添加空格**
+  - 支持多行配置，每行一组，但**标识符不得重复**
+  - 以 `#` 开头的行会被视为注释
+  - 如果在 U 盘或移动硬盘中使用，请将路径盘符改写为 `Z:`，软件会自动将 `Z:` 映射为实际运行的软件所在盘符
+
+### 2. 生成配置
+- 运行 `config_gen.exe`
+- 选择刚刚创建的 TXT 文件
+- 程序会生成配置文件，并提示有效配置数量；若报错，请根据提示修改 TXT 文件内容
+
+**注意**：
+- 配置完成后，请**立即删除 TXT 文件**，防止你的明文密码泄露！
+- 每次重新生成配置，都会覆盖原有的全部配置！在将来的某个版本中，我们可能会优化配置生成器的操作逻辑
+
+### 3. 保护文件夹
+- 运行主软件 `AccessAuthentication.exe`
+- 输入正确的标识符，点击 “保护” 为标识符所对应的文件夹上锁，并将加密文件设为受系统保护
+
+### 4. 访问受保护文件夹
+- 运行主软件 `AccessAuthentication.exe`
+- 输入正确的标识符和密码，点击 “解锁”，验证成功后会自动打开对应的文件夹
+- 使用完文件夹后，请**再次点击 “保护” 为文件夹上锁**，否则你的文件夹将处于未保护状态
+
+## 三、使用技巧
+- 点击 “关闭” 以退出软件
+- 可以按住左上角的图标拖动窗口
+- 必要时，可以点击右下角的 `?` 打开帮助手册
+- 在配置生成器全新升级以前，建议手动记录所有标识符，一旦忘记标识符，您只能联系作者寻求进一步帮助
+
+## 四、常见错误使用案例
+- 忘记删除 TXT → 导致密码泄露
+- 使用后未点击 “保护” → 文件夹暴露（当然你也可以故意不再保护这个文件夹）
+- 配置被覆盖 → 原有访问失效
+- 路径写错 / 盘符变化 → 无法打开文件
+- 在 U 盘、移动硬盘等移动存储媒介中配置盘符为 `Z:`，但运行了移动媒介外的软件 → 不会重定向到对应移动存储媒介所在盘符
+
+## 五、注意事项
+1. 未来您可以下载安装包，在本地磁盘安装本软件，若有在移动存储媒介上使用的需求，可以复制安装目录到移动硬盘或 U 盘，无需二次安装。
+2. **不推荐直接用于文件**！因为其扩展名会被保留，保护前的文件也无法自动清理。软件设计的初衷是保护文件夹（及其中的文件）而非文件本身。若想保护某个文件，建议移动到文件夹中！
+3. 在移动存储媒介中使用软件，并配置路径盘符为 `Z:`，则**必须运行移动存储媒介内的软件**，因为 `Z:` 本质上是重定向到实际运行的主软件所在盘符。
+
+---
+
+# Latest Version
 `AccessAuthentication.exe`: main software
 `config_gen.exe`: sub-software called configurations generator (配置生成器)
 
-## Version 2.1.0-pre
-**重要更新**！完善了多线程的管理机制，规范化了各种错误、校验、警告、中断等返回值，加入了进度条，但尚未配置各种返回值的后续操作，当前版本**仅供预览功能**！
+## Version 2.2.0
+采用多线程及其错误判别机制的**稳定运行版**！
 ### Added
-- 添加了 `TaskBase` 基类，便于获取当前任务以精细化管理
-- 添加了 `normalizeDbFile()` 函数，在未成功删除 DB 文件时，用户可以直接手动删除 DB 文件，以免造成额外残留
+- 创建了 `CHANGELOG.md` 以规范化记录版本更迭情况
+- 封装了 `tasks.cpp` 中所有可能的错误码及其说明字符串，见 `error_code.h` 和 `error_code.cpp`
 ### Fixed
-- 利用 `enum` 增设了规范化管理的返回值 `TaskResult`，为后续管理返回值提供便利
-- 调整了部分 UI，将 `Confirm` 和 `Cancel` 改为 `Unlock` 和 `Close`，并在点击 `Protect` 或 `Unlock` 时暂时禁用两按钮，直到相关操作完成
-- 优化了信号-槽机制，加入了百分比进度条，实时显示运行进度，但进度条数据显示还有进一步优化空间
+- 修复了 `protect` 过程无法取消的 bug
+- `error_code.cpp` 中的文本已嵌套多语言模块 `tr()` 以提前适配未来版本
+- 完善了错误码判别机制
 ### Issue
-1. 当前版本在 `mainwindow` 中只是简单接收了来自线程的信号，并没有进行后续处理，在后续的版本中将完善体验
-2. 在未来的版本中，可能进一步优化进度条的显示内容和 UI
-3. 未来可能会优化多语言的问题，减少干扰信息
-4. 为提升用户体验，后续版本可能会针对配置生成器进行升级，可能变成基于 UI 的管理工具。考虑工程量较大，此工期可能较长，敬请期待！
+1. 在未来的版本中，可能进一步优化进度条的显示内容和 UI
+2. 未来将会优化多语言问题，减少对话框中的干扰信息
+3. 为提升用户体验，后续版本可能会针对配置生成器进行升级，可能变成基于 UI 的管理工具。考虑工程量较大，此工期可能较长，敬请期待！
