@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 project(AccessAuthentication VERSION 1.4 LANGUAGES CXX)
 set(PROJECT_NAME AccessAuthentication)
+set(SUBPROJECT_NAME config_gen)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -50,7 +51,7 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 
 # 设置 配置生成器 工具
 add_executable(
-    config_gen
+    ${SUBPROJECT_NAME}
     ${PROJECT_SOURCE_DIR}/tools/config_gen.cpp
     ${CMAKE_SOURCE_DIR}/includes/encoder.h
     ${CMAKE_SOURCE_DIR}/includes/HelpDialog.h
@@ -58,10 +59,13 @@ add_executable(
     ${PROJECT_SOURCE_DIR}/resc_config.qrc
 )
 target_link_libraries(
-    config_gen PRIVATE
+    ${SUBPROJECT_NAME} PRIVATE
     Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Network
+)
+set_target_properties(${SUBPROJECT_NAME} PROPERTIES
+    WIN32_EXECUTABLE FALSE
 )
 
 # ==================== 安装规则 ====================
@@ -72,7 +76,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${DEPLOY_DIR}"
     RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${DEPLOY_DIR}"
 )
-set_target_properties(config_gen PROPERTIES
+set_target_properties(${SUBPROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY_RELEASE "${DEPLOY_DIR}"
     RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${DEPLOY_DIR}"
     RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${DEPLOY_DIR}"
@@ -99,17 +103,17 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMENT "Deploying Qt dependencies..."
     VERBATIM
 )
-add_custom_command(TARGET config_gen POST_BUILD
+add_custom_command(TARGET ${SUBPROJECT_NAME} POST_BUILD
     COMMAND "${CMAKE_COMMAND}" -E echo ">>> Running windeployqt..."
     COMMAND "${WINDEPLOYQT_EXECUTABLE}"
             --no-translations
             --no-gui
             --qmldir "${CMAKE_SOURCE_DIR}/qml"
-            "$<TARGET_FILE:config_gen>"
+            "$<TARGET_FILE:${SUBPROJECT_NAME}>"
     WORKING_DIRECTORY "${DEPLOY_DIR}"
     COMMENT "Deploying Qt dependencies..."
     VERBATIM
 )
 
 qt_finalize_executable(${PROJECT_NAME})
-qt_finalize_executable(config_gen)
+qt_finalize_executable(${SUBPROJECT_NAME})

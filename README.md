@@ -40,7 +40,7 @@ myfile|abc123|D:\SecretFolder
 ### 4. Access the Protected Folder
 - Run the main program `AccessAuthentication.exe`.
 - Enter the correct identifier and password, then click "Unlock". Upon successful verification, the corresponding folder will be opened automatically.
-- After use, please click "Protect" again to relock the folder, otherwise it will remain unprotected.
+- After use, **please click "Protect" again to relock the folder**, otherwise it will remain unprotected.
 
 ## III. Tips
 - Click "Close" to exit the software.
@@ -127,19 +127,9 @@ myfile|abc123|D:\SecretFolder
 ---
 
 # Latest Version
-`AccessAuthentication.exe`: main software
+`AccessAuthentication.exe`: main software</br>
 `config_gen.exe`: sub-software called configurations generator (配置生成器)
 
-## Version 2.2.0
+## Version 2.2.1
+A **stable running version** using multithreading and its error discrimination mechanism!</br>
 采用多线程及其错误判别机制的**稳定运行版**！
-### Added
-- 创建了 `CHANGELOG.md` 以规范化记录版本更迭情况
-- 封装了 `tasks.cpp` 中所有可能的错误码及其说明字符串，见 `error_code.h` 和 `error_code.cpp`
-### Fixed
-- 修复了 `protect` 过程无法取消的 bug
-- `error_code.cpp` 中的文本已嵌套多语言模块 `tr()` 以提前适配未来版本
-- 完善了错误码判别机制
-### Issue
-1. 在未来的版本中，可能进一步优化进度条的显示内容和 UI
-2. 未来将会优化多语言问题，减少对话框中的干扰信息
-3. 为提升用户体验，后续版本可能会针对配置生成器进行升级，可能变成基于 UI 的管理工具。考虑工程量较大，此工期可能较长，敬请期待！

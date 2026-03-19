@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QMainWindow>
+#include <QMessageBox>
 #include <QProgressDialog>
 #include "authenticator.h"
 #include "processor.h"
@@ -27,6 +28,7 @@ private:
     Authenticator* authenticator;
     Processor* proc;  // 线程管理
     QProgressDialog* pgDialog = nullptr;
+    QMessageBox* reporter;
     void btn_enable();
     void btn_disable();
 

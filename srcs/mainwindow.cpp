@@ -5,7 +5,6 @@
 #include <QDir>
 #include <QFile>
 #include <QFileDialog>
-#include <QMessageBox>
 #include <QStorageInfo>
 #include <QTimer>
 #include <QWidget>
@@ -21,6 +20,10 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 
     QString bin_path = QDir(QCoreApplication::applicationDirPath()).filePath("resources/core.bin");
     authenticator = new Authenticator(bin_path, this);
+
+    reporter = new QMessageBox(this);
+    reporter->setStandardButtons(QMessageBox::NoButton);
+    reporter->setWindowFlags(reporter->windowFlags() & ~Qt::WindowCloseButtonHint);
 
     connect(ui->id_input, &QLineEdit::returnPressed, ui->go_btn, &QPushButton::click);
     connect(ui->pw_input, &QLineEdit::returnPressed, ui->go_btn, &QPushButton::click);
@@ -195,6 +198,8 @@ void MainWindow::onProgress(quint64 done, quint64 total) {
 }
 
 void MainWindow::onProtectFinished(int condition, QString message) {
+    if (reporter && reporter->isVisible())
+        reporter->hide();
     if (condition < 10)
         QMessageBox::information(this, "Success", message);
     else if (condition >= 70)
@@ -211,6 +216,8 @@ void MainWindow::onProtectFinished(int condition, QString message) {
 }
 
 void MainWindow::onRestoreFinished(int condition, QString message) {
+    if (reporter && reporter->isVisible())
+        reporter->hide();
     if (condition == 0) {  // 若成功，message 实际上是 folderPath
         if (!QDesktopServices::openUrl(QUrl::fromLocalFile(message)))
             QMessageBox::critical(this, "Fail to open", "Verification error!\n校验错误！");
@@ -240,16 +247,25 @@ void MainWindow::onRestoreFinished(int condition, QString message) {
 void MainWindow::showReport(int type, QString message) {
     switch (type) {
     case 0:
-        QMessageBox::information(this, "Report", message);
+        reporter->setIcon(QMessageBox::Information);
+        reporter->setWindowTitle("Report");
         break;
     case 1:
-        QMessageBox::warning(this, "Warning", message);
+        reporter->setIcon(QMessageBox::Warning);
+        reporter->setWindowTitle("Warning");
         break;
     case 2:
-        QMessageBox::critical(this, "Error", message);
+        reporter->setIcon(QMessageBox::Critical);
+        reporter->setWindowTitle("Error");
         break;
     default:
-        QMessageBox::critical(this, "Unknown Error",
-            QString("Unknown Error:\nCode: %1\n%2").arg(type).arg(message));
+        reporter->setIcon(QMessageBox::Critical);
+        reporter->setWindowTitle("Unknown Error");
+        message = (QString("Unknown Error!\nCode: %1\n%2").arg(type).arg(message));
     }
+    reporter->setText(message);
+    if (!reporter->isVisible())
+        reporter->show();
+    else
+        reporter->raise();
 }
