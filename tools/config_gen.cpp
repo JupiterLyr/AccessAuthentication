@@ -11,7 +11,7 @@
 #include <QPushButton>
 #include <QSet>
 #include <QTimer>
-#include "encoder.h"
+#include "encoder.hpp"
 #include "HelpDialog.h"
 
 class How2Use : public QDialog {

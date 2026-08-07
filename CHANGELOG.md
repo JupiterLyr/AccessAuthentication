@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.2.2]
+### Changed
+- 为确保规范性，将 `encoder.h` 改为 `encoder.hpp`，并同步修改了关联的引用
+
 ## [2.2.1]
 ### Fixed
 - 去除了 `report` 提示弹窗中的按钮，优化了其显示逻辑

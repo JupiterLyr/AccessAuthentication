@@ -1,6 +1,6 @@
 // 本文件仅用于记录架构，具体算法不予公开
-#ifndef ENCODER_H
-#define ENCODER_H
+#ifndef ENCODER_HPP
+#define ENCODER_HPP
 
 /* #include */
 

@@ -1,5 +1,5 @@
 #include "authenticator.h"
-#include "encoder.h"
+#include "encoder.hpp"
 #include <QDataStream>
 #include <QFile>
 

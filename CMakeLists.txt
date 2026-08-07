@@ -53,7 +53,7 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 add_executable(
     ${SUBPROJECT_NAME}
     ${PROJECT_SOURCE_DIR}/tools/config_gen.cpp
-    ${CMAKE_SOURCE_DIR}/includes/encoder.h
+    ${CMAKE_SOURCE_DIR}/includes/encoder.hpp
     ${CMAKE_SOURCE_DIR}/includes/HelpDialog.h
     ${CMAKE_SOURCE_DIR}/srcs/HelpDialog.cpp
     ${PROJECT_SOURCE_DIR}/resc_config.qrc

@@ -47,6 +47,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 
 MainWindow::~MainWindow() {
     delete ui;
+    delete proc;
 }
 
 void MainWindow::btn_enable() {
